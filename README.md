@@ -3,9 +3,9 @@
 Kostenloses Browser-Spiel für Touch auf iPad und iPhone, ohne externe Pakete. Version 3 ersetzt den festen Waldbrand-Ablauf durch eine durchgehend sichtbare Einsatzkarte von oben.
 
 ## Spielen
-https://whisewolf.github.io/Alexander-Vibe-Coding/?v=loeschflugzeug-32
+https://whisewolf.github.io/Alexander-Vibe-Coding/?v=einsaetze-35
 
-1. Autobrand, Waldbrand oder Flugzeugbrand wählen und Notruf annehmen.
+1. In der Einsatzzentrale den zufälligen Notruf annehmen. Fünf Szenarien: Auto-, Wald-, Flugzeug-, Lagerhausbrand und Verkehrsunfall.
 2. Fahrzeugtyp und eine ganze Anzahl von 1 bis 10 wählen, dann anfordern. Insgesamt passen zehn Fahrzeuge auf die Karte.
 3. Die Fahrzeuge fahren sichtbar an. Aus Löschwagen und Vorhut steigen jeweils zwei Feuerwehrleute aus.
 4. Feuerwehrmann auf der Karte antippen. Unten Ausrüstung wählen: Schlauch, Schaum, Pulver, Wasser mit Mittel oder Rettung. Der Feuerwehrmann geht zum Gerätefach.
@@ -25,3 +25,9 @@ Rettungswagen und Polizei können anfahren und zurückfahren. Polizei hat noch k
 ## Prüfung
 
 Lokal `python3 -m http.server 8000` starten. JavaScript-Syntax und Browserabläufe in Chromium mit Touch-Viewport prüfen. Ein echter Safari-Test auf iPad/iPhone bleibt nötig, insbesondere für Sprachausgabe und Bediengefühl.
+
+## Version 3.5
+
+Lagerhaus: 100 Sekunden Explosionswarnung. Zuerst den gelb markierten Brand löschen, um die Explosion zu verhindern. Sonst ein kurzer Lichtblitz, Knall und zwei zusätzliche Feuerstellen; keine verletzten Menschen dargestellt. Verkehrsunfall: Motorbrand löschen und die eingeklemmte Person mit der Rettungsschere befreien (zehn Sekunden Arbeit). Beide Szenarien erscheinen als zufällige Notrufe.
+
+Prüfungen: `node check-new-missions.cjs`, `node center-check.cjs`, `node audio-check.cjs`. Simulationen mit DOM/Audio-Stubs; echter Touch- und Hörtest auf eurem Gerät steht aus.
