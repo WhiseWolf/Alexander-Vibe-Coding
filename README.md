@@ -3,7 +3,7 @@
 Kostenloses Browser-Spiel für Touch auf iPad und iPhone, ohne externe Pakete. Version 3 ersetzt den festen Waldbrand-Ablauf durch eine durchgehend sichtbare Einsatzkarte von oben.
 
 ## Spielen
-https://whisewolf.github.io/Alexander-Vibe-Coding/?v=einsatzleitung-3
+https://whisewolf.github.io/Alexander-Vibe-Coding/?v=loeschflugzeug-32
 
 1. Autobrand, Waldbrand oder Flugzeugbrand wählen und Notruf annehmen.
 2. Fahrzeugtyp und eine ganze Anzahl von 1 bis 10 wählen, dann anfordern. Insgesamt passen zehn Fahrzeuge auf die Karte.
@@ -14,7 +14,7 @@ https://whisewolf.github.io/Alexander-Vibe-Coding/?v=einsatzleitung-3
 7. Tankstände stehen in der Fahrzeugliste und unter den Fahrzeugen. Bei weniger als 20 Prozent kommt eine Warnung. Verstärkung anfordern und das gewählte Fahrzeug über „Zurück / auftanken“ zur Wache schicken. Die Mannschaft sammelt sich, steigt ein; nach Rückfahrt und 12 Sekunden Auftanken kehrt das Fahrzeug zurück.
 8. Am Ende müssen alle Brände gelöscht und alle Personen gerettet sein. Dann räumt die Mannschaft vereinfacht auf und rückt ab.
 
-Optional: Funkstimme mit Browser-Sprachausgabe. Pause hält die Simulation an, im Hintergrund läuft sie nicht weiter. Im Wald steht ein automatisch fliegendes Löschflugzeug mit sichtbarem Wasserabwurf zur Verfügung.
+Optional: Funkstimme mit Browser-Sprachausgabe. Pause hält die Simulation an, im Hintergrund läuft sie nicht weiter. Version 3.2 startet mit Waldbrand. Tippe auf „Löschflugzeug“, dann auf eine brennende Stelle: Das Flugzeug fliegt sichtbar an und wirft dort Wasser ab. Der Abwurf schwächt nur die Brände in seinem Abwurfstreifen. Nach 75 Sekunden kann es erneut angefordert werden. Ein weiterer Tipp auf den Flugzeugknopf bricht die Zielwahl ab. Die Feuerwehr am Boden übernimmt die übrigen Brände und die Rettung.
 
 ## Grenzen und Spielregeln
 

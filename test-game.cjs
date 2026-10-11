@@ -11,7 +11,7 @@ run('select("person",S.people.find(p=>p.truckId===S.trucks[0].id).id);equip("res
 // Issue normal target commands, refilling whenever a tank is exhausted.
 for(let fi=0;fi<3;fi++){for(let attempts=0;attempts<5&&run(`S.fires[${fi}].hp>0`);attempts++){run('select("person",S.people.find(p=>p.truckId===S.trucks[0].id).id);equip("foam")');const f=run(`({x:S.fires[${fi}].x,y:S.fires[${fi}].y})`);tap(f.x,f.y);advance(190);if(!run('S.done')&&run('S.trucks[0].water<10')){run('sendBack(S.trucks[0])');advance(100);}}}
 assert.ok(run('S.done'));advance(100);assert.ok(run('S.trucks.every(t=>t.state==="finished")'));
-el('mission').value='forest';run('reset();start()');el('air').onclick();advance(8);assert.ok(run('S.fires.every(f=>f.hp===120)'));
+el('mission').value='forest';run('reset();start()');el('air').onclick();assert.ok(run('S.airAim'));tap(100,100);assert.equal(run('S.air'),null);tap(600,220);assert.ok(run('S.air&&!S.airAim'));advance(8);assert.equal(run('S.fires[0].hp'),120);assert.equal(run('S.fires[1].hp'),120);assert.equal(run('S.fires[4].hp'),230);assert.equal(run('S.air'),null);el('air').onclick();assert.equal(run('S.airCooldown>0'),true);advance(70);el('air').onclick();el('air').onclick();assert.equal(run('S.airAim'),false);el('air').onclick();run('reset()');assert.equal(run('S.airAim'),false);
 el('mission').value='airport';run('reset();start()');el('vehicle').value='panther';el('count').value='1';run('dispatch()');advance(20);run('select("truck",S.trucks[0].id);equip("foam")');tap(655,235);advance(10);assert.ok(run('S.fires[0].hp<260'));
 run('S.paused=true');const time=run('S.elapsed');advance(20);assert.equal(run('S.elapsed'),time);
 run('S.paused=false');el('count').value='1.5';run('dispatch()');assert.equal(run('S.trucks.length'),1);
