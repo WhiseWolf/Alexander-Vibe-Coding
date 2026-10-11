@@ -17,6 +17,7 @@ canvas{flex:none;aspect-ratio:1000/680;max-width:100%;max-height:calc(100% - 5px
 @media(orientation:landscape) and (max-height:600px){header{padding-top:4px;padding-bottom:4px}header small{display:none}h1{font-size:15px}header button{font-size:12px;padding:7px;min-height:44px}main{grid-template-columns:minmax(0,1fr) clamp(270px,30vw,340px);gap:6px}main>.toolbar{font-size:12px}main>.toolbar button{font-size:12px;padding:7px}.hud span{font-size:10px;padding:5px}.dock p{margin:4px 0 7px}}
 
 [hidden]{display:none!important}
+header{flex-wrap:wrap}.controls{max-width:100%;margin-left:auto;flex-wrap:wrap}#center-return{font-size:12px;padding:8px}
 body.central header .controls #pause{display:none}
 body.central main{display:none}
 .dispatch-center{flex:1;min-height:0;overflow:auto;padding:16px max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom));background:radial-gradient(ellipse at top,#294c58,#101b22 75%)}
