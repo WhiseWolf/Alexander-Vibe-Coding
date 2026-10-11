@@ -17,6 +17,7 @@ canvas{flex:none;aspect-ratio:1000/680;max-width:100%;max-height:calc(100% - 5px
 @media(orientation:landscape) and (max-height:600px){header{padding-top:4px;padding-bottom:4px}header small{display:none}h1{font-size:15px}header button{font-size:12px;padding:7px;min-height:44px}main{grid-template-columns:minmax(0,1fr) clamp(270px,30vw,340px);gap:6px}main>.toolbar{font-size:12px}main>.toolbar button{font-size:12px;padding:7px}.hud span{font-size:10px;padding:5px}.dock p{margin:4px 0 7px}}
 
 [hidden]{display:none!important}
+.volume-control{font-size:11px;display:flex;align-items:center;gap:4px}.volume-control input{width:75px;min-height:44px;padding:0;accent-color:#e8bc58}
 header{flex-wrap:wrap}.controls{max-width:100%;margin-left:auto;flex-wrap:wrap}#center-return{font-size:12px;padding:8px}
 body.central header .controls #pause{display:none}
 body.central main{display:none}
@@ -39,7 +40,7 @@ body.central #center-return{display:none}
 main>.toolbar #start,main>.toolbar label{display:none}
 @media(max-width:650px){.center-board{grid-template-columns:minmax(0,1fr)}.dispatch-center{padding:12px}.call-card,.station-card{padding:14px}.center-intro{margin-bottom:12px}}
 @media(orientation:landscape) and (max-height:600px){.dispatch-center{padding-top:4px}.center-title{font-size:22px;margin:4px 0}.center-intro{margin:4px 0 12px}.call-card,.station-card{padding:12px}.call-card h3{font-size:18px;margin:8px 0}.station-card ul{margin:0;line-height:1.6}}
-</style></head><body><header><div><h1>Alexanders Feuerwehr</h1><small>Einsatzleitung · Blick von der Drohne</small></div><div class="controls"><button id="center-return">Einsatz beenden</button><button id="sound" aria-pressed="false">Ton: aus</button><button id="pause" aria-pressed="false">Pause</button></div></header>
+</style></head><body><header><div><h1>Alexanders Feuerwehr</h1><small>Einsatzleitung · Blick von der Drohne</small></div><div class="controls"><button id="center-return">Einsatz beenden</button><button id="sound" aria-pressed="false">Ton: aus</button><label class="volume-control">Lautstärke <input id="volume" aria-label="Lautstärke" type="range" min="0" max="100" value="45"></label><button id="pause" aria-pressed="false">Pause</button></div></header>
 <section id="dispatch-center" class="dispatch-center" aria-label="Einsatzzentrale">
 <div class="center-shell"><h2 class="center-title">🚒 Einsatzzentrale</h2>
 <p class="center-intro">Hier bist du der Einsatzleiter. Nimm den Notruf an und entscheide vor Ort, welche Hilfe gebraucht wird.</p>
@@ -56,7 +57,7 @@ main>.toolbar #start,main>.toolbar label{display:none}
 <div class="scene"><div class="hud"><span id="status">NOTRUF · AUTOBRAND</span><span id="overview">Noch keine Einheiten</span></div><canvas id="map" width="1000" height="680" aria-label="Einsatzkarte von oben. Feuerwehrmann oder Fahrzeug antippen, dann Ausrüstung und Ziel wählen."></canvas><div class="progress"><div id="fill"></div></div></div>
 <section class="command-panel" aria-label="Fahrzeuge und Ausrüstung"><div class="dock"><h2>Fahrzeuge anfordern</h2><div class="toolbar"><label>Fahrzeug <select id="vehicle"><option value="engine">Löschwagen · 2 Feuerwehrleute</option><option value="scout">Vorhut · 2 Feuerwehrleute</option><option value="panther">Flughafen-Panther</option><option value="ambulance">Rettungswagen</option><option value="police">Polizei</option></select></label><label>Anzahl <input id="count" type="number" inputmode="numeric" min="1" max="10" value="1"></label><button id="dispatch">🚨 Anfordern</button></div><div id="units" aria-label="Einheiten auswählen"></div></div>
 <div class="dock"><h2 id="selection">Tippe einen Feuerwehrmann oder ein Fahrzeug an</h2><p id="hint">Nimm den Notruf an. Fordere dann einen Löschwagen an. Du siehst die Anfahrt und das Aussteigen.</p><div class="row" id="equipment"><button data-tool="water">💧 Wasserschlauch</button><button data-tool="foam">🫧 Löschschaum</button><button data-tool="powder">🧯 Löschpulver</button><button data-tool="additive">💦 Wasser + Mittel</button><button data-tool="rescue">🩺 Menschen retten</button></div><div class="row" style="margin-top:8px"><button id="return">↩ Zurück / auftanken</button><button id="air">✈ Löschflugzeug</button></div></div>
-<div id="radio" role="log" aria-live="polite">📻 Ein Notruf wartet auf dich.</div><footer><span>Version 3.3 · Animierte 2D-Einsatzkarte · Spielregeln, keine echte Einsatzanleitung</span><button id="restart">Neu starten</button></footer></section></main><script src="game.js?v=loeschflugzeug-32"></script><script>
+<div id="radio" role="log" aria-live="polite">📻 Ein Notruf wartet auf dich.</div><footer><span>Version 3.4 · Animierte 2D-Einsatzkarte · Spielregeln, keine echte Einsatzanleitung</span><button id="restart">Neu starten</button></footer></section></main><script src="game.js?v=loeschflugzeug-32"></script><script>
 // Size the actual canvas box, so touch coordinates match the entire map.
 const sceneBox=document.querySelector('.scene'),mapBox=document.getElementById('map');
 function fitMap(){const w=sceneBox.clientWidth,h=Math.max(0,sceneBox.clientHeight-5),scale=Math.min(w/1000,h/680);mapBox.style.width=(1000*scale)+'px';mapBox.style.height=(680*scale)+'px';}
@@ -103,4 +104,78 @@ document.getElementById('center-return').onclick=openCenter;
 document.getElementById('restart').onclick=openCenter;
 document.getElementById('restart').textContent='Nächster Notruf';
 openCenter();
-</script></body></html>
+</script>
+<script>
+// Small synthesized sound effects: no downloads, tracking, or external audio files.
+let audioContext=null,audioMaster=null,audioLoops={},audioVolume=.45,lastRinging=0;
+function audioTone(frequency,duration=.12,offset=0,type='sine',strength=.12){
+ if(!audioContext||!sound||document.hidden)return;
+ const when=audioContext.currentTime+offset,osc=audioContext.createOscillator(),gain=audioContext.createGain();
+ osc.type=type;osc.frequency.setValueAtTime(frequency,when);gain.gain.setValueAtTime(0,when);
+ gain.gain.linearRampToValueAtTime(strength,when+.015);gain.gain.exponentialRampToValueAtTime(.0001,when+duration);
+ osc.connect(gain);gain.connect(audioMaster);osc.start(when);osc.stop(when+duration+.03);
+ osc.onended=()=>{osc.disconnect();gain.disconnect();};
+}
+function audioCue(kind){
+ const patterns={click:[[600,.06,0]],radio:[[1100,.06,0],[850,.06,.09]],alarm:[[740,.15,0],[990,.15,.18],[740,.15,.36]],
+ ring:[[650,.16,0],[850,.16,0],[650,.16,.24],[850,.16,.24]],
+ rescue:[[520,.12,0],[660,.12,.14],[780,.2,.28]],success:[[523,.16,0],[659,.16,.18],[784,.16,.36],[1047,.3,.54]],
+ drop:[[260,.15,0],[180,.2,.15]],warning:[[440,.13,0],[440,.13,.2]]};
+ (patterns[kind]||patterns.click).forEach(n=>audioTone(...n));
+}
+function initAudio(){
+ if(audioContext)return;
+ const AudioCtor=window.AudioContext||window.webkitAudioContext;if(!AudioCtor)return;
+ audioContext=new AudioCtor();audioMaster=audioContext.createGain();audioMaster.gain.value=0;audioMaster.connect(audioContext.destination);
+ const buffer=audioContext.createBuffer(1,audioContext.sampleRate*2,audioContext.sampleRate),data=buffer.getChannelData(0);
+ for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1);
+ function noise(name,frequency,type){
+  const source=audioContext.createBufferSource(),filter=audioContext.createBiquadFilter(),gain=audioContext.createGain();
+  source.buffer=buffer;source.loop=true;filter.type=type;filter.frequency.value=frequency;gain.gain.value=0;
+  source.connect(filter);filter.connect(gain);gain.connect(audioMaster);source.start();audioLoops[name]={source,gain};
+ }
+ function engine(name,frequency,type){
+  const source=audioContext.createOscillator(),gain=audioContext.createGain();source.type=type;source.frequency.value=frequency;gain.gain.value=0;
+  source.connect(gain);gain.connect(audioMaster);source.start();audioLoops[name]={source,gain};
+ }
+ noise('fire',550,'lowpass');noise('water',2200,'bandpass');noise('drop',1200,'lowpass');
+ engine('engine',65,'triangle');engine('siren',740,'sine');engine('plane',95,'sawtooth');
+}
+function updateAudio(){
+ if(!audioContext)return;
+ const now=audioContext.currentTime,enabled=sound&&!document.hidden&&!S.paused;
+ audioMaster.gain.setTargetAtTime(enabled?audioVolume:0,now,.035);
+ const running=enabled&&S.active&&!S.done&&!document.body.classList.contains('central');
+ const incoming=running&&S.trucks.some(t=>t.state==='incoming'),driving=running&&S.trucks.some(t=>['incoming','returning'].includes(t.state));
+ const spraying=running&&(S.people.some(p=>p.state==='working'&&p.target?.kind==='fire'&&S.fires[p.target.index]?.hp>0&&S.trucks.find(t=>t.id===p.truckId)?.water>0)||S.trucks.some(t=>t.state==='ready'&&t.target!==null&&t.water>0&&S.fires[t.target]?.hp>0));
+ const levels={fire:running&&S.fires.some(f=>f.hp>0)?.035:0,water:spraying?.07:0,engine:driving?.035:0,siren:incoming?.035:0,plane:running&&S.air?.025:0,drop:running&&S.air?.dropped?.08:0};
+ Object.entries(levels).forEach(([name,level])=>audioLoops[name].gain.gain.setTargetAtTime(level,now,.08));
+ audioLoops.siren.source.frequency.setTargetAtTime(Math.floor(now*2)%2?980:740,now,.05);
+ audioLoops.engine.source.frequency.setTargetAtTime(65+Math.sin(now*12)*4,now,.05);
+ if(enabled&&document.body.classList.contains('central')&&pendingCall&&now-lastRinging>2){audioCue('ring');lastRinging=now;}
+}
+radio=function(message){
+ document.getElementById('radio').textContent='📻 '+message;
+ if(sound&&!S.paused&&!document.hidden&&window.speechSynthesis){window.speechSynthesis.cancel();const voice=new SpeechSynthesisUtterance(message);voice.lang='de-DE';voice.volume=audioVolume;window.speechSynthesis.speak(voice);}
+ if(!sound||S.paused||document.hidden)return;
+ if(message.includes('Einsatz geschafft'))audioCue('success');
+ else if(message.includes('Person gerettet'))audioCue('rescue');
+ else if(message.includes('Wasserabwurf erfolgt'))audioCue('drop');
+ else if(/Tank leer|Tank fast|Tank wird/.test(message))audioCue('warning');
+ else audioCue('radio');
+};
+const originalSoundClick=document.getElementById('sound').onclick;
+document.getElementById('sound').onclick=()=>{
+ try{initAudio();if(audioContext?.state==='suspended')audioContext.resume().catch(()=>{});}catch(e){/* Spoken radio remains available when Web Audio is unsupported. */}
+ originalSoundClick();lastRinging=-3;updateAudio();
+};
+document.addEventListener('click',e=>{
+ const button=e.target.closest('button');if(!button||button.disabled||button.id==='sound')return;
+ if(button.id==='pause'&&S.paused)window.speechSynthesis?.cancel();
+ audioCue(button.id==='dispatch'?'alarm':'click');updateAudio();
+});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)window.speechSynthesis?.cancel();updateAudio();});
+document.getElementById('volume').oninput=e=>{audioVolume=Number(e.target.value)/100;updateAudio();};
+setInterval(updateAudio,120);
+</script>
+</body></html>
