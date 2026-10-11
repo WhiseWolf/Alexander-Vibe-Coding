@@ -1,0 +1,18 @@
+// Headless simulation tests. Run: node test-game.cjs
+const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+const elements=new Map(),tools=['water','foam','powder','additive','rescue'].map(tool=>({dataset:{tool},classList:{toggle(){}},disabled:false}));
+function el(id){if(!elements.has(id))elements.set(id,{value:({mission:'car',count:'1',vehicle:'engine'})[id]||'',style:{},dataset:{},children:[],classList:{toggle(){}},setAttribute(){},addEventListener(n,fn){this[n]=fn},append(v){this.children.push(v)},replaceChildren(){this.children=[]},getContext(){return {}},getBoundingClientRect(){return{x:0,y:0,left:0,top:0,width:1000,height:680}}});return elements.get(id);}
+const document={getElementById:el,querySelectorAll:()=>tools,addEventListener(){},createElement:()=>({style:{},classList:{toggle(){}}})};
+const c=vm.createContext({document,window:{},requestAnimationFrame(){},console});vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),c);const run=s=>vm.runInContext(s,c);const advance=n=>run(`for(let i=0;i<${n*10};i++)tick(.1)`);const tap=(x,y)=>el('map').pointerdown({button:0,clientX:x,clientY:y});
+run('start()');el('count').value='3';run('dispatch()');advance(20);assert.equal(run('S.trucks.length'),3);assert.equal(run('S.people.length'),6);assert.ok(run('S.trucks.every(t=>t.state==="ready")'));
+let p=run('({x:S.people[0].x,y:S.people[0].y})');tap(p.x,p.y);run('equip("foam")');tap(670,310);advance(80);assert.ok(run('S.fires[0].hp<200&&S.trucks[0].water<100'));
+run('sendBack(S.trucks[0])');advance(100);assert.ok(run('S.trucks[0].state==="ready"&&S.trucks[0].water===100'));
+run('select("person",S.people.find(p=>p.truckId===S.trucks[0].id).id);equip("rescue")');tap(785,390);advance(50);assert.ok(run('S.civilians[0].saved'));
+// Issue normal target commands, refilling whenever a tank is exhausted.
+for(let fi=0;fi<3;fi++){for(let attempts=0;attempts<5&&run(`S.fires[${fi}].hp>0`);attempts++){run('select("person",S.people.find(p=>p.truckId===S.trucks[0].id).id);equip("foam")');const f=run(`({x:S.fires[${fi}].x,y:S.fires[${fi}].y})`);tap(f.x,f.y);advance(190);if(!run('S.done')&&run('S.trucks[0].water<10')){run('sendBack(S.trucks[0])');advance(100);}}}
+assert.ok(run('S.done'));advance(100);assert.ok(run('S.trucks.every(t=>t.state==="finished")'));
+el('mission').value='forest';run('reset();start()');el('air').onclick();advance(8);assert.ok(run('S.fires.every(f=>f.hp===120)'));
+el('mission').value='airport';run('reset();start()');el('vehicle').value='panther';el('count').value='1';run('dispatch()');advance(20);run('select("truck",S.trucks[0].id);equip("foam")');tap(655,235);advance(10);assert.ok(run('S.fires[0].hp<260'));
+run('S.paused=true');const time=run('S.elapsed');advance(20);assert.equal(run('S.elapsed'),time);
+run('S.paused=false');el('count').value='1.5';run('dispatch()');assert.equal(run('S.trucks.length'),1);
+console.log('PASS: dispatch, selection, equipment, extinguishing, tank refill/return, rescue, mission completion, air drop, Panther, pause, count validation');
