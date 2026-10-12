@@ -19,6 +19,6 @@ for(const mission of ['warehouse','accident']){
  }
  assert.ok(run(`S.fires[${fi}].hp===0`));
  }
- assert.ok(run('S.done'));advance(100);assert.ok(run('S.trucks.every(t=>t.state==="finished")'));console.log('PASS '+mission+': rescue, all fires extinguished, refilling, completion, return and drawing');
+ assert.ok(!run('S.done'));el('vehicle').value='ambulance';el('count').value='1';run('dispatch()');advance(120);assert.ok(run('S.done'));advance(100);assert.ok(run('S.trucks.every(t=>t.state==="finished")'));console.log('PASS '+mission+': rescue, all fires extinguished, refilling, completion, return and drawing');
 }
 el('mission').value='warehouse';run('reset();S.spread=null;start();S.fires[0].hp=0');advance(110);assert.equal(run('S.fires.length'),3);assert.ok(run('S.hazard.resolved&&!S.hazard.exploded'));console.log('PASS: cooling the warehouse crates prevents explosion');
