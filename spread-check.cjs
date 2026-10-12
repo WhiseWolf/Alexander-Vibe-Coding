@@ -9,7 +9,7 @@ function step(n){run(`for(let n=0;n<${n*10};n++)tick(.1)`);}
 function aim(x,y){handlers.mappointerdown({button:0,clientX:x,clientY:y});}
 
 let seed=12;sandbox.Math=Object.create(Math);sandbox.Math.random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
-for(const mission of ['car','forest','airport','warehouse','accident','river']){
+for(const mission of ['car','forest','airport','warehouse','accident','river','tunnel']){
  el('mission').value=mission;
  const layouts=new Set();
  for(let i=0;i<10;i++){run('reset();draw()');layouts.add(run('JSON.stringify(S.fires.map(f=>[f.x,f.y,f.hp]))'));assert(run('S.spread.fuel.length>0'),'Every mission has spread opportunities');}
@@ -35,4 +35,4 @@ for(let fi=0;fi<run('S.fires.length');fi++){
  assert(run(`S.fires[${fi}].hp===0`),'Spread fires remain extinguishable');
 }
 assert(run('S.done'),'Variable forest with real spread remains completable');
-console.log('PASS: variable layouts in six missions, actual spread, finite fuel, no reignition, cooling prevention, pause and full command completion');
+console.log('PASS: variable layouts in seven missions, actual spread, finite fuel, no reignition, cooling prevention, pause and full command completion');
