@@ -21,5 +21,5 @@ for(let i=0;i<3;i++){
  run("select('person',S.people[0].id);equip('rescue')");aim(run(`S.river.barrels[${i}].x`),run(`S.river.barrels[${i}].y`));assert(run('S.people[0].target===null'));
  run("equip('boom')");aim(run(`S.river.barrels[${i}].x`),run(`S.river.barrels[${i}].y`));step(35);assert(run(`S.river.barrels[${i}].secured&&!S.river.barrels[${i}].leaking`));
 }
-assert(run('S.done'),'River mission can be completed using real commands');step(100);assert(run('S.trucks.every(t=>t.state==="finished")'));run('draw();reset()');assert(run('!S.done&&S.river.barrels.every(b=>!b.secured&&!b.leaking)'));
+assert(!run('S.done'));el('vehicle').value='ambulance';el('count').value='1';run('dispatch()');step(120);assert(run('S.done'),'River mission can be completed using real commands');step(100);assert(run('S.trucks.every(t=>t.state==="finished")'));run('draw();reset()');assert(run('!S.done&&S.river.barrels.every(b=>!b.secured&&!b.leaking)'));
 console.log('PASS: river drift, pause, diver equipment, fire, leaking barrel recovery, containment required, success, return, reset and rendering');
