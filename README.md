@@ -37,3 +37,7 @@ Prüfungen: `node check-new-missions.cjs`, `node center-check.cjs`, `node audio-
 Neuer zufälliger Notruf an der Flussbrücke. Transporterbrand löschen, eine Person mit Tauchausrüstung retten und drei tatsächlich treibende Ölfässer sichern. Für jedes Fass: Feuerwehrmann auswählen, Ölsperre holen, Fass antippen. Die Mannschaft sichert es vereinfacht vom Ufer aus. Ein ungesichertes Fass kann am rechten Kartenrand Öl verlieren; Sichern beseitigt den dargestellten Ölfilm. Erst nach allen drei Aufgaben ist der Einsatz beendet. Tauchausrüstung ist eine vereinfachte Rettungsaktion, keine Unterwassersimulation.
 
 Prüfung: `node river-check.cjs` sowie vorhandene Spiel-, Notruf- und Tonprüfungen. Echter Safari-Gerätetest bleibt offen.
+
+## Version 3.8 – Automatisch zurück zur Einsatzzentrale
+
+Nach erfolgreichem Abschluss erscheint sechs Sekunden lang die Erfolgsmeldung mit Countdown. Danach öffnet sich automatisch die Einsatzzentrale, setzt den alten Einsatz zurück und empfängt den nächsten zufälligen Notruf. Pause und Hintergrund halten den Countdown ebenfalls an. „Nächster Notruf“ bleibt als sofortige Rückkehr verfügbar. Prüfung: `node completion-center-check.cjs`.
