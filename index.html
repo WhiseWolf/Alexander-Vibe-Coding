@@ -50,14 +50,14 @@ main>.toolbar #start,main>.toolbar label{display:none}
 <p id="call-message">Ein neuer Anruf geht gleich ein.</p>
 <button id="accept-call" class="primary" disabled>☎ Warte auf den Anruf</button>
 </article><aside class="station-card"><h3>Wache einsatzbereit</h3><ul><li>Vorhut und Löschwagen</li><li>Rettung und Polizei</li><li>Flughafen-Panther</li><li>Löschflugzeug bei Waldbrand</li></ul><p class="center-note">Welcher Notruf kommt, entscheidet der Zufall. Fahrzeuge forderst du auf der Einsatzkarte an.</p></aside></div>
-<p class="center-note">Fünf mögliche Einsätze: Autobrand, Waldbrand, Flugzeugbrand, Lagerhausbrand und Verkehrsunfall.</p>
+<p class="center-note">Sechs mögliche Einsätze: Autobrand, Waldbrand, Flugzeugbrand, Lagerhausbrand, Verkehrsunfall und Flussunfall.</p>
 </div></section>
 <main>
-<div class="toolbar"><label>Einsatz <select id="mission"><option value="car">Autobrand</option><option value="forest" selected>Waldbrand</option><option value="airport">Flugzeugbrand</option><option value="warehouse">Lagerhausbrand</option><option value="accident">Verkehrsunfall</option></select></label><button id="start" class="primary">☎ Notruf annehmen</button><span id="clock">00:00</span></div>
+<div class="toolbar"><label>Einsatz <select id="mission"><option value="car">Autobrand</option><option value="forest" selected>Waldbrand</option><option value="airport">Flugzeugbrand</option><option value="warehouse">Lagerhausbrand</option><option value="accident">Verkehrsunfall</option><option value="river">Flussunfall</option></select></label><button id="start" class="primary">☎ Notruf annehmen</button><span id="clock">00:00</span></div>
 <div class="scene"><div class="hud"><span id="status">NOTRUF · AUTOBRAND</span><span id="overview">Noch keine Einheiten</span></div><canvas id="map" width="1000" height="680" aria-label="Einsatzkarte von oben. Feuerwehrmann oder Fahrzeug antippen, dann Ausrüstung und Ziel wählen."></canvas><div class="progress"><div id="fill"></div></div></div>
 <section class="command-panel" aria-label="Fahrzeuge und Ausrüstung"><div class="dock"><h2>Fahrzeuge anfordern</h2><div class="toolbar"><label>Fahrzeug <select id="vehicle"><option value="engine">Löschwagen · 2 Feuerwehrleute</option><option value="scout">Vorhut · 2 Feuerwehrleute</option><option value="panther">Flughafen-Panther</option><option value="ambulance">Rettungswagen</option><option value="police">Polizei</option></select></label><label>Anzahl <input id="count" type="number" inputmode="numeric" min="1" max="10" value="1"></label><button id="dispatch">🚨 Anfordern</button></div><div id="units" aria-label="Einheiten auswählen"></div></div>
-<div class="dock"><h2 id="selection">Tippe einen Feuerwehrmann oder ein Fahrzeug an</h2><p id="hint">Nimm den Notruf an. Fordere dann einen Löschwagen an. Du siehst die Anfahrt und das Aussteigen.</p><div class="row" id="equipment"><button data-tool="water">💧 Wasserschlauch</button><button data-tool="foam">🫧 Löschschaum</button><button data-tool="powder">🧯 Löschpulver</button><button data-tool="additive">💦 Wasser + Mittel</button><button data-tool="cutter">✂ Rettungsschere</button><button data-tool="rescue">🩺 Menschen retten</button></div><div class="row" style="margin-top:8px"><button id="return">↩ Zurück / auftanken</button><button id="air">✈ Löschflugzeug</button></div></div>
-<div id="radio" role="log" aria-live="polite">📻 Ein Notruf wartet auf dich.</div><footer><span>Version 3.6 · Animierte 2D-Einsatzkarte · Spielregeln, keine echte Einsatzanleitung</span><button id="restart">Neu starten</button></footer></section></main><script src="game.js?v=einsaetze-36"></script><script>
+<div class="dock"><h2 id="selection">Tippe einen Feuerwehrmann oder ein Fahrzeug an</h2><p id="hint">Nimm den Notruf an. Fordere dann einen Löschwagen an. Du siehst die Anfahrt und das Aussteigen.</p><div class="row" id="equipment"><button data-tool="water">💧 Wasserschlauch</button><button data-tool="foam">🫧 Löschschaum</button><button data-tool="powder">🧯 Löschpulver</button><button data-tool="additive">💦 Wasser + Mittel</button><button data-tool="cutter">✂ Rettungsschere</button><button data-tool="diver">🤿 Tauchausrüstung</button><button data-tool="boom">🛟 Ölsperre</button><button data-tool="rescue">🩺 Menschen retten</button></div><div class="row" style="margin-top:8px"><button id="return">↩ Zurück / auftanken</button><button id="air">✈ Löschflugzeug</button></div></div>
+<div id="radio" role="log" aria-live="polite">📻 Ein Notruf wartet auf dich.</div><footer><span>Version 3.7 · Animierte 2D-Einsatzkarte · Spielregeln, keine echte Einsatzanleitung</span><button id="restart">Neu starten</button></footer></section></main><script src="game.js?v=fluss-37"></script><script>
 // Size the actual canvas box, so touch coordinates match the entire map.
 const sceneBox=document.querySelector('.scene'),mapBox=document.getElementById('map');
 function fitMap(){const w=sceneBox.clientWidth,h=Math.max(0,sceneBox.clientHeight-5),scale=Math.min(w/1000,h/680);mapBox.style.width=(1000*scale)+'px';mapBox.style.height=(680*scale)+'px';}
@@ -65,6 +65,7 @@ new ResizeObserver(fitMap).observe(sceneBox);fitMap();
 </script>
 <script>
 const emergencyCalls=[
+{mission:'river',title:'Unfall an der Flussbrücke!',place:'Flussbrücke · Uferstraße',message:'Ein Transporter brennt am Ufer! Drei Ölfässer treiben im Fluss und eine Person ist im Wasser. Wir brauchen Tauchausrüstung und Ölsperren!'},
 {mission:'warehouse',title:'Das Lagerhaus brennt!',place:'Lagerhaus im Gewerbepark',message:'Hier brennt es neben einem Gefahrbereich! Bitte verhindert die Explosion und helft der Person vor dem Lagerhaus!'},
 {mission:'accident',title:'Unfall auf der Straße!',place:'Straße beim Gewerbepark',message:'Zwei Autos sind zusammengestoßen. Ein Motor brennt und eine Person sitzt fest. Wir brauchen Feuerwehr und eine Rettungsschere!'},
 {mission:'car',title:'Ein Auto brennt!',place:'Parkplatz am Stadtpark',message:'Hier steigt Rauch aus einem Auto auf. Eine Person braucht Hilfe. Bitte schickt die Feuerwehr!'},
@@ -72,9 +73,11 @@ const emergencyCalls=[
 {mission:'airport',title:'Feuer am Flugzeug!',place:'Flughafen · Vorfeld',message:'An einem Flugzeug ist ein Feuer ausgebrochen. Drei Menschen brauchen Hilfe. Bitte schickt die Flughafen-Feuerwehr!'}
 ];
 let pendingCall=null,previousCall=-1,callTimer=null;
+let firstMission=new URLSearchParams(window.location?.search||'').get('einsatz');
 function receiveCall(){
  const choices=emergencyCalls.map((_,i)=>i).filter(i=>i!==previousCall);
- const index=choices[Math.floor(Math.random()*choices.length)];previousCall=index;pendingCall=emergencyCalls[index];
+ const requested=emergencyCalls.findIndex(call=>call.mission===firstMission);firstMission=null;
+ const index=requested>=0?requested:choices[Math.floor(Math.random()*choices.length)];previousCall=index;pendingCall=emergencyCalls[index];
  document.getElementById('call-card').classList.add('incoming');
  document.getElementById('call-status').textContent='NOTRUF GEHT EIN';
  document.getElementById('call-title').textContent=pendingCall.title;
