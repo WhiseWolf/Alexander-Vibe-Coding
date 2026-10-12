@@ -6,7 +6,7 @@ const document={getElementById:el,querySelectorAll:()=>tools,addEventListener(){
 const c=vm.createContext({document,window:{},requestAnimationFrame(){},console});vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),c);const run=s=>vm.runInContext(s,c);const advance=n=>run(`for(let i=0;i<${n*10};i++)tick(.1)`);const tap=(x,y)=>el('map').pointerdown({button:0,clientX:x,clientY:y});
 
 for(const mission of ['warehouse','accident']){
- el('mission').value=mission;run('reset();start()');el('vehicle').value='engine';el('count').value='3';run('dispatch()');advance(110);
+ el('mission').value=mission;run('reset();S.spread=null;start()');el('vehicle').value='engine';el('count').value='3';run('dispatch()');advance(110);
  if(mission==='warehouse'){assert.equal(run('S.hazard.exploded'),true);assert.equal(run('S.fires.length'),5);}
  run('draw()');
  for(let ci=0;ci<run('S.civilians.length');ci++){
@@ -21,4 +21,4 @@ for(const mission of ['warehouse','accident']){
  }
  assert.ok(run('S.done'));advance(100);assert.ok(run('S.trucks.every(t=>t.state==="finished")'));console.log('PASS '+mission+': rescue, all fires extinguished, refilling, completion, return and drawing');
 }
-el('mission').value='warehouse';run('reset();start();S.fires[0].hp=0');advance(110);assert.equal(run('S.fires.length'),3);assert.ok(run('S.hazard.resolved&&!S.hazard.exploded'));console.log('PASS: cooling the warehouse crates prevents explosion');
+el('mission').value='warehouse';run('reset();S.spread=null;start();S.fires[0].hp=0');advance(110);assert.equal(run('S.fires.length'),3);assert.ok(run('S.hazard.resolved&&!S.hazard.exploded'));console.log('PASS: cooling the warehouse crates prevents explosion');
