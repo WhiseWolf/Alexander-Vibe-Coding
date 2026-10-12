@@ -41,3 +41,9 @@ Prüfung: `node river-check.cjs` sowie vorhandene Spiel-, Notruf- und Tonprüfun
 ## Version 3.8 – Automatisch zurück zur Einsatzzentrale
 
 Nach erfolgreichem Abschluss erscheint sechs Sekunden lang die Erfolgsmeldung mit Countdown. Danach öffnet sich automatisch die Einsatzzentrale, setzt den alten Einsatz zurück und empfängt den nächsten zufälligen Notruf. Pause und Hintergrund halten den Countdown ebenfalls an. „Nächster Notruf“ bleibt als sofortige Rückkehr verfügbar. Prüfung: `node completion-center-check.cjs`.
+
+## Version 3.9 – Variable Brände und begrenzte Ausbreitung
+
+Brandstellen und Anfangsstärken variieren beim Laden. Auf dem Parkplatz kann eines von drei verschiedenen Autos den Ausgangsbrand bilden. Waldbrände variieren stärker als Fahrzeugbrände, damit das Feuer zum Objekt passt. Nach 35–50 Sekunden kann ein kräftiger Brand eine nahe Stelle bedrohen: gelbe Warnmarkierung, zwölf Sekunden bis zum Übergreifen. Den Ausgangsbrand auf unter 40 Prozent schwächen verhindert dies. Pro Einsatz höchstens vier zusätzliche Ausbreitungsstellen im Wald, zwei bei Auto/Flugzeug/Lagerhaus und eine bei Unfall/Fluss (Lagerhaus-Explosion weiterhin separat). Jede Ausbreitungsstelle entzündet sich höchstens einmal; gelöschte Brände zünden nicht erneut. Vereinfachte Windrichtung beeinflusst im Wald die bevorzugte Ausbreitungsseite. Pause und Hintergrund halten den Ablauf an.
+
+Ausbreitung und Lösbarkeit geprüft mit `node spread-check.cjs`; vorhandene Tests isolieren ihre jeweiligen Mechaniken gezielt von zufälliger Ausbreitung.
