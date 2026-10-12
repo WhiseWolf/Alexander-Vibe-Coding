@@ -16,7 +16,7 @@ const html=fs.readFileSync('index.html','utf8');
 const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].find(m=>m[1].includes('const emergencyCalls='))[1];
 vm.runInContext(script,sandbox);
 timer();el('accept-call').onclick();assert(!central&&run('S.active'));
-run('S.fires.forEach(f=>f.hp=0);S.civilians.forEach(c=>c.saved=true);if(S.river)S.river.barrels.forEach(b=>b.secured=true)');step(1);
+run('S.fires.forEach(f=>f.hp=0);S.civilians.forEach(c=>c.saved=true);if(S.river)S.river.barrels.forEach(b=>b.secured=true);if(S.tunnel)S.tunnel.powerOff=true');step(1);
 assert(run('S.done')&&!central,'Success stays visible');
 run('S.paused=true');step(20);assert(!central,'Pause holds completion countdown');
 run('S.paused=false');step(4);assert(!central,'Return does not happen early');step(2);
