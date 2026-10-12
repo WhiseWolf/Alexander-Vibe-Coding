@@ -47,3 +47,7 @@ Nach erfolgreichem Abschluss erscheint sechs Sekunden lang die Erfolgsmeldung mi
 Brandstellen und Anfangsstärken variieren beim Laden. Auf dem Parkplatz kann eines von drei verschiedenen Autos den Ausgangsbrand bilden. Waldbrände variieren stärker als Fahrzeugbrände, damit das Feuer zum Objekt passt. Nach 35–50 Sekunden kann ein kräftiger Brand eine nahe Stelle bedrohen: gelbe Warnmarkierung, zwölf Sekunden bis zum Übergreifen. Den Ausgangsbrand auf unter 40 Prozent schwächen verhindert dies. Pro Einsatz höchstens vier zusätzliche Ausbreitungsstellen im Wald, zwei bei Auto/Flugzeug/Lagerhaus und eine bei Unfall/Fluss (Lagerhaus-Explosion weiterhin separat). Jede Ausbreitungsstelle entzündet sich höchstens einmal; gelöschte Brände zünden nicht erneut. Vereinfachte Windrichtung beeinflusst im Wald die bevorzugte Ausbreitungsseite. Pause und Hintergrund halten den Ablauf an.
 
 Ausbreitung und Lösbarkeit geprüft mit `node spread-check.cjs`; vorhandene Tests isolieren ihre jeweiligen Mechaniken gezielt von zufälliger Ausbreitung.
+
+## Version 4.0 – Nachtexpress im Bergtunnel
+
+Siebter Notruf mit eigener Nachtkarte, stehendem Zug, Warnleuchten und Funken. Feuerwehrmann auswählen, neue Aktion Notabschaltung wählen und den markierten Schaltkasten links antippen. Nach fünf Sekunden Arbeit sind Funken aus und Lösch-/Türaktionen freigeschaltet. Zwei Fahrgäste mit Rettungsschere befreien und variable Brände löschen. Brandausbreitung bleibt begrenzt. Erfolg führt automatisch zur Einsatzzentrale zurück. Vereinfachte Spielregeln, kein reales Bahneinsatz-Verfahren.
