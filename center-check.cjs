@@ -6,4 +6,4 @@ const html=fs.readFileSync('index.html','utf8');const script=[...html.matchAll(/
 assert.equal(el('accept-call').disabled,true);assert.equal(starts,0);timer();assert.equal(el('accept-call').disabled,false);
 const seen=new Set();let previous;
 for(let i=0;i<80;i++){const call=vm.runInContext('pendingCall',c);assert.notEqual(call.mission,previous);el('accept-call').onclick();assert.equal(mission,call.mission);assert.equal(el('dispatch-center').hidden,true);seen.add(mission);previous=mission;el('restart').onclick();assert.equal(el('dispatch-center').hidden,false);assert.equal(el('accept-call').disabled,true);timer();}
-assert.equal(seen.size,6);assert.equal(starts,80);assert.ok(resets>=160);console.log('PASS: waiting, incoming call, random scenario mapping, no consecutive repeats, accepting, returning and resetting');
+assert.equal(seen.size,7);assert.equal(starts,80);assert.ok(resets>=160);console.log('PASS: waiting, incoming call, random scenario mapping, no consecutive repeats, accepting, returning and resetting');
