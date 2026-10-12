@@ -6,11 +6,36 @@ let S,last=0,sound=false;
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y), clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 function radio(t){$('radio').textContent='📻 '+t;if(sound&&window.speechSynthesis){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-DE';window.speechSynthesis.speak(u);}}
 function onMissionComplete(){}
-function reset(){S={mission:$('mission').value,active:false,paused:false,elapsed:0,anim:0,trucks:[],people:[],fires:[],civilians:[],selected:null,nextId:1,air:null,airAim:false,airCooldown:0,done:false,completionWait:0,centerRequested:false,check:0,hazard:null,river:null};
+const randomBetween=(a,b)=>a+Math.random()*(b-a);
+function makeSpread(){
+ const spots={car:[[700,330],[570,228],[825,235],[575,443]],forest:[[500,200],[570,150],[690,150],[815,200],[865,300],[845,440],[760,475],[555,450],[485,325]],airport:[[790,300],[775,445],[530,280]],warehouse:[[575,310],[770,240],[750,400]],accident:[[755,275]],river:[[650,420]]};
+ const limit={car:2,forest:4,airport:2,warehouse:2,accident:1,river:1}[S.mission];
+ const pool=spots[S.mission].map(([x,y])=>({x,y,used:false,heat:0})).filter(p=>S.fires.every(f=>dist(p,f)>65)&&S.civilians.every(c=>dist(p,c)>45)&&(S.mission!=='car'||S.fires.some(f=>dist(p,f)<230)));
+ for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+ return {fuel:pool.slice(0,limit),timer:randomBetween(35,50),wind:Math.random()<.5?-1:1,pending:null};
+}
+function updateSpread(dt){
+ if(S.done||!S.spread)return;
+ const spread=S.spread;
+ if(spread.pending!==null){
+  const fuel=spread.fuel[spread.pending],source=S.fires[fuel.source];
+  if(!source||source.hp<source.max*.4){fuel.heat=0;spread.pending=null;spread.timer=randomBetween(25,40);radio('Ausbreitung gestoppt! Der Ausgangsbrand ist rechtzeitig geschwächt.');return;}
+  fuel.heat+=dt/12;
+  if(fuel.heat>=1){fuel.used=true;fuel.heat=0;S.fires.push({x:fuel.x,y:fuel.y,hp:55,max:55,heat:1});spread.pending=null;spread.timer=randomBetween(35,50);radio('Das Feuer hat auf eine neue Stelle übergegriffen!');ui();}
+  return;
+ }
+ spread.timer-=dt;if(spread.timer>0)return;spread.timer=randomBetween(35,50);
+ const options=spread.fuel.map((fuel,index)=>({fuel,index,source:S.fires.findIndex(f=>f.hp>f.max*.55&&dist(f,fuel)<(S.mission==='forest'?190:230))})).filter(o=>!o.fuel.used&&o.source>=0);
+ if(!options.length)return;
+ options.sort((a,b)=>spread.wind*(b.fuel.x-a.fuel.x));
+ const pick=options[0];pick.fuel.source=pick.source;spread.pending=pick.index;radio('Achtung: Das Feuer droht auf die gelb markierte Stelle überzugreifen! Lösche oder schwäche den Brand daneben.');
+}
+function reset(){S={mission:$('mission').value,active:false,paused:false,elapsed:0,anim:0,trucks:[],people:[],fires:[],civilians:[],selected:null,nextId:1,air:null,airAim:false,airCooldown:0,done:false,completionWait:0,centerRequested:false,check:0,hazard:null,river:null,spread:null};
 S.hazard=S.mission==='warehouse'?{remaining:100,resolved:false,exploded:false,flash:0}:null;
 S.river=S.mission==='river'?{barrels:[550,650,750].map((x,i)=>({x,y:275+i*18,secured:false,leaking:false})),warned:false}:null;
-const f=S.mission==='river'?[[560,390,100]]:S.mission==='warehouse'?[[640,270,45],[715,320,100],[620,385,100]]:S.mission==='accident'?[[680,300,110]]:S.mission==='car'?[[670,310,200],[730,325,180],[698,370,180]]:S.mission==='forest'?[[600,220,230],[720,250,230],[790,370,230],[670,440,230],[550,365,230]]:[[655,235,260],[710,285,260],[600,360,260],[735,390,260]];
-S.fires=f.map(([x,y,hp])=>({x,y,hp,max:hp,heat:1}));S.civilians=(S.mission==='river'?[[790,215]]:S.mission==='warehouse'?[[815,400]]:S.mission==='accident'?[[765,355]]:S.mission==='airport'?[[825,280],[850,355],[810,420]]:S.mission==='car'?[[785,390]]:[[840,450],[835,500]]).map(([x,y])=>({x,y,saved:false,trapped:S.mission==='accident',underwater:S.mission==='river'}));$('start').disabled=false;$('pause').textContent='Pause';$('pause').setAttribute('aria-pressed','false');$('radio').textContent='📻 Ein Notruf wartet auf dich.';ui();}
+S.ignition=S.mission==='car'?[[700,330],[570,228],[825,235]][Math.floor(Math.random()*3)]:null;
+const f=S.mission==='river'?[[560,390,100]]:S.mission==='warehouse'?[[640,270,45],[715,320,100],[620,385,100]]:S.mission==='accident'?[[680,300,110]]:S.mission==='car'?[[S.ignition[0]-30,S.ignition[1]-20,200],[S.ignition[0]+30,S.ignition[1]-5,180],[S.ignition[0]-2,S.ignition[1]+40,180]]:S.mission==='forest'?[[600,220,230],[720,250,230],[790,370,230],[670,440,230],[550,365,230]]:[[655,235,260],[710,285,260],[600,360,260],[735,390,260]];
+S.fires=f.map(([x,y,hp],index)=>{const jitter=S.mission==='forest'?28:S.mission==='airport'?20:12;const strength=S.mission==='warehouse'&&index===0?hp:Math.round(hp*randomBetween(.9,1.1));return{x:x+randomBetween(-jitter,jitter),y:y+randomBetween(-jitter,jitter),hp:strength,max:strength,heat:1};});S.civilians=(S.mission==='river'?[[790,215]]:S.mission==='warehouse'?[[815,400]]:S.mission==='accident'?[[765,355]]:S.mission==='airport'?[[825,280],[850,355],[810,420]]:S.mission==='car'?[[785,390]]:[[840,450],[835,500]]).map(([x,y])=>({x,y,saved:false,trapped:S.mission==='accident',underwater:S.mission==='river'}));S.spread=makeSpread();$('start').disabled=false;$('pause').textContent='Pause';$('pause').setAttribute('aria-pressed','false');$('radio').textContent='📻 Ein Notruf wartet auf dich.';ui();}
 function selected(){if(!S.selected)return null;return (S.selected.kind==='person'?S.people:S.trucks).find(v=>v.id===S.selected.id);}
 function select(kind,id){S.selected={kind,id};ui();}
 function ui(){const v=selected(),person=S.selected?.kind==='person';$('selection').textContent=v?(person?'Feuerwehrmann '+v.number:names[v.type]+' '+v.number)+' ausgewählt':'Tippe einen Feuerwehrmann oder ein Fahrzeug an';
@@ -35,6 +60,7 @@ for(const t of S.trucks){if(t.state==='incoming'){if(move(t,t.slot,dt,80)){t.sta
 for(const p of S.people){const t=S.trucks.find(t=>t.id===p.truckId);if(p.state==='boarding'){if(move(p,p.goal,dt,65)){p.state='aboard';p.trail=[];}}else if(p.state==='packing'){if(move(p,p.goal,dt,65)){p.state='idle';p.trail=[];}}else if(p.state==='collect'){const g={x:t.x+38,y:t.y-40};if(move(p,g,dt,70)){p.state=p.goal?'moving':'idle';p.trail=[{x:g.x,y:g.y}];}}else if(p.state==='moving'&&p.goal){if(p.target?.kind==='barrel')p.goal={x:S.river.barrels[p.target.index].x,y:365};if(move(p,p.goal,dt,70)){p.state=p.target?'working':'idle';}if(p.tool&&!['rescue','cutter','diver','boom'].includes(p.tool)&&(p.trail.length===0||dist(p,p.trail[p.trail.length-1])>25))p.trail.push({x:p.x,y:p.y});}else if(p.state==='working'&&p.target){if(p.target.kind==='fire'){const f=S.fires[p.target.index];if(f.hp<=0){p.target=null;p.state='packing';p.goal={x:t.x+25,y:t.y-40};radio('Feuerwehrmann '+p.number+': Mein Ziel ist gelöscht. Ich bringe das Gerät zurück.');ui();}else if(t.water<=0){p.state='idle';p.target=null;radio('Tank leer. Schicke das Fahrzeug zum Auftanken und fordere Verstärkung an.');ui();}else attack(p,f,dt,1);}else if(p.target.kind==='barrel'){const b=S.river.barrels[p.target.index];if(dist(p,{x:b.x,y:365})>30){p.goal={x:b.x,y:365};p.state='moving';}else{p.job+=dt;if(p.job>=8){b.secured=true;b.leaking=false;p.target=null;p.state='packing';p.goal={x:t.x+25,y:t.y-40};radio('Ölfass gesichert! Die Ölsperre hält das Öl zurück.');ui();}}}else{const c=S.civilians[p.target.index];p.job+=dt;if(p.job>=(c.underwater?12:c.trapped?10:6)){c.saved=true;p.target=null;p.state='packing';p.goal={x:t.x+25,y:t.y-40};radio('Person gerettet und zum sicheren Sammelplatz gebracht.');ui();}}}}
 if(S.air){S.air.x+=dt*200;if(S.air.x>=S.air.target.x&&!S.air.dropped){S.air.dropped=true;S.fires.filter(f=>Math.abs(f.y-S.air.target.y)<=110&&Math.abs(f.x-S.air.target.x)<=170).forEach(f=>f.hp=Math.max(0,f.hp-110));radio('Löschflugzeug: Wasserabwurf erfolgt.');}if(S.air.x>1150)S.air=null;}
 updateHazard(dt);
+updateSpread(dt);
 if(!S.done&&S.fires.every(f=>f.hp<=0)&&S.civilians.every(c=>c.saved)&&(!S.river||S.river.barrels.every(b=>b.secured))){S.done=true;S.airAim=false;S.trucks.filter(t=>t.state==='ready').forEach(t=>sendBack(t,true));radio(S.river?'Einsatz geschafft! Person gerettet, Brand gelöscht und alle Ölfässer gesichert. Die Mannschaft räumt auf.':'Einsatz geschafft! Alle Menschen gerettet, alle Brände gelöscht. Die Mannschaft räumt auf.');ui();}
 if(S.done&&!S.centerRequested){S.completionWait+=dt;if(S.completionWait>=6){S.centerRequested=true;onMissionComplete();return;}}
 S.check+=dt;if(S.check>=1){S.check=0;ui();}}
@@ -84,6 +110,7 @@ label('RETTUNGSSCHERE → PERSON',695,405,12,'#ffdd75');
 label('← FEUERWEHRWACHE',25,665,13);label('SAMMELPLATZ',830,478,11);ellipse(885,460,20,20,'#73b4a9');label('+',879,466,20);
 for(const p of S.people){if(p.tool&&!['rescue','cutter','diver','boom'].includes(p.tool)&&p.trail.length&&p.state!=='aboard'){const t=S.trucks.find(t=>t.id===p.truckId);path([{x:t.x,y:t.y-22},...p.trail,{x:p.x,y:p.y}],'#24323480',6);path([{x:t.x,y:t.y-22},...p.trail,{x:p.x,y:p.y}],'#d7bf75',3);}}
 S.civilians.filter(c=>c.saved).forEach((c,i)=>{ellipse(865+i*18,456,6,8,'#a5d1bc');});S.trucks.forEach(drawTruck);S.civilians.forEach(c=>drawPerson(c,true));S.people.forEach(p=>drawPerson(p));S.fires.forEach(fireFX);
+if(S.spread){S.spread.fuel.filter(f=>f.heat>0&&!f.used).forEach(f=>{ctx.strokeStyle='#ffdd75';ctx.lineWidth=4;ctx.beginPath();ctx.arc(f.x,f.y,24+f.heat*12,0,Math.PI*2);ctx.stroke();label('BRANDGEFAHR',f.x-45,f.y-38,11,'#ffdd75');});if(S.mission==='forest'){label('WIND '+(S.spread.wind>0?'→':'←'),35,120,16,'#d7eddd');}}
 S.people.filter(p=>p.state==='working'&&p.target?.kind==='fire').forEach(p=>{const t=S.trucks.find(t=>t.id===p.truckId);if(t.water>0&&S.fires[p.target.index].hp>0)jet(p,S.fires[p.target.index],p.tool);});S.trucks.filter(t=>t.state==='ready'&&t.target!==null&&t.water>0).forEach(t=>jet({x:t.x+25,y:t.y},S.fires[t.target],t.tool));
 if(S.air){const a=S.air;if(a.dropped){for(let i=0;i<25;i++)ellipse(a.x-35-i*9,a.y+Math.sin(i)*75,15,12,'#c5edff60');}ctx.save();ctx.translate(a.x,a.y);ctx.fillStyle='#e5d575';ctx.fillRect(-35,-7,70,14);ctx.fillStyle='#e4e5d4';ctx.fillRect(-9,-53,17,106);ctx.fillRect(-29,-26,7,52);ellipse(35,0,12,7,'#cbd5d4');ctx.restore();}
 if(S.hazard){const h=S.hazard;ctx.fillStyle='#142831e8';ctx.fillRect(200,55,620,40);label(h.exploded?'EXPLOSION · Zwei neue Brandstellen':h.resolved?'EXPLOSION VERHINDERT':'EXPLOSIONSWARNUNG · '+Math.ceil(h.remaining)+' s · markierten Brand löschen',215,82,16,h.resolved?'#a0e4c7':'#ffdd75');if(h.flash>0){ctx.fillStyle='rgba(255,204,112,'+(h.flash*.6)+')';ctx.fillRect(0,0,1000,680);}}
