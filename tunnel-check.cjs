@@ -20,5 +20,5 @@ for(let fi=0;fi<run('S.fires.length');fi++){
  }
  assert(run(`S.fires[${fi}].hp===0`));
 }
-assert(run('S.done&&S.tunnel.powerOff'),'Tunnel mission finishes through real equipment and target commands with spread enabled');run('draw();reset()');assert(run('!S.tunnel.powerOff&&!S.active'));
+assert(!run('S.done'));el('vehicle').value='ambulance';el('count').value='1';run('dispatch()');step(180);assert(run('S.done&&S.tunnel.powerOff'),'Tunnel mission finishes through real equipment and target commands with spread enabled');run('draw();reset()');assert(run('!S.tunnel.powerOff&&!S.active'));
 console.log('PASS: tunnel setup/rendering, action gates, switch command, pause, trapped passenger rescue, extinguishing with spread, completion and reset');
