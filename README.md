@@ -20,7 +20,7 @@ Optional: Funkstimme mit Browser-Sprachausgabe. Pause hält die Simulation an, i
 
 Detaillierter gezeichnetes 2D-Canvas mit Animationen, kein fotorealistisches 3D. Schlauchleitungen sind sichtbar und werden automatisch ausgelegt. Aufräumen und Rettung sind vereinfacht. Feuerlöscherarten nutzen bewusst erfundene Wirkungswerte, keine Anleitung für reale Einsätze. Einsatzdauer hängt von Anzahl, Löschmittel und Befehlen ab: eine einzelne Mannschaft benötigt mehrere Tankfüllungen; viele Fahrzeuge verkürzen die Zeit deutlich. Zehn Minuten sind eine Zielgröße, keine feste Wartezeit.
 
-Rettungswagen und Polizei können anfahren und zurückfahren. Polizei hat noch keine Absperrmechanik; Rettungswagen übernimmt nahe Personen automatisch, die Feuerwehr kann Personen mit der Rettungsaktion selbst retten. Nicht eingebaut: Mikrofonbefehle, manuelles Lenken/Fliegen, Tauchen, frei begehbare 3D-Welt, manuelle Schlauchkupplungen, Flughafen-Terminal, komplexe Gefahrstoffkleidung. Die alten Versionen bleiben in der Git-Historie.
+Polizei kann anfahren und zurückfahren, hat noch keine Absperrmechanik. Die Feuerwehr befreit Menschen, Krankenwagen versorgen und transportieren sie anschließend (Version 4.1). Nicht eingebaut: Mikrofonbefehle, manuelles Lenken/Fliegen, Tauchen, frei begehbare 3D-Welt, manuelle Schlauchkupplungen, Flughafen-Terminal, komplexe Gefahrstoffkleidung. Die alten Versionen bleiben in der Git-Historie.
 
 ## Prüfung
 
@@ -51,3 +51,9 @@ Ausbreitung und Lösbarkeit geprüft mit `node spread-check.cjs`; vorhandene Tes
 ## Version 4.0 – Nachtexpress im Bergtunnel
 
 Siebter Notruf mit eigener Nachtkarte, stehendem Zug, Warnleuchten und Funken. Feuerwehrmann auswählen, neue Aktion Notabschaltung wählen und den markierten Schaltkasten links antippen. Nach fünf Sekunden Arbeit sind Funken aus und Lösch-/Türaktionen freigeschaltet. Zwei Fahrgäste mit Rettungsschere befreien und variable Brände löschen. Brandausbreitung bleibt begrenzt. Erfolg führt automatisch zur Einsatzzentrale zurück. Vereinfachte Spielregeln, kein reales Bahneinsatz-Verfahren.
+
+## Version 4.1 – Krankenwagen und Patiententransport
+
+Feuerwehr-Rettung befreit eine Person und bringt sie sichtbar zum Sammelplatz. Sie wartet dort auf einen Krankenwagen. Jeder Krankenwagen übernimmt automatisch genau einen freien Patienten, fährt zum Sammelplatz, versorgt ihn acht Sekunden, nimmt ihn auf und fährt zum Krankenhaus (linker Kartenrand). Erst die Übergabe zählt als abgeschlossener Transport. Nach zwölf Sekunden kehrt der Wagen für weitere Patienten zurück. Mehrere Wagen übernehmen unterschiedliche Patienten. Einsatzabschluss verlangt die Übergabe aller Patienten zusätzlich zu den bisherigen Aufgaben. Ein Stellplatz bleibt für einen Krankenwagen reserviert, solange keiner angefordert wurde. Pause/Hintergrund halten auch Versorgung und Transport an. Vereinfachte Spielmechanik ohne medizinische Simulation.
+
+Prüfung: `node ambulance-check.cjs` und aktualisierte Szenario-/Abschlusstests. Echter iPad-/iPhone-Test bleibt offen.
