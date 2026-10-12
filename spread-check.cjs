@@ -34,5 +34,5 @@ for(let fi=0;fi<run('S.fires.length');fi++){
  }
  assert(run(`S.fires[${fi}].hp===0`),'Spread fires remain extinguishable');
 }
-assert(run('S.done'),'Variable forest with real spread remains completable');
+assert(!run('S.done'));el('vehicle').value='ambulance';el('count').value='2';run('dispatch()');step(180);assert(run('S.done'),'Variable forest with real spread remains completable');
 console.log('PASS: variable layouts in seven missions, actual spread, finite fuel, no reignition, cooling prevention, pause and full command completion');
