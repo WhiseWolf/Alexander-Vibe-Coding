@@ -12,18 +12,18 @@ let seed=12;sandbox.Math=Object.create(Math);sandbox.Math.random=()=>{seed=(seed
 for(const mission of ['car','forest','airport','warehouse','accident','river','tunnel']){
  el('mission').value=mission;
  const layouts=new Set();
- for(let i=0;i<10;i++){run('reset();draw()');layouts.add(run('JSON.stringify(S.fires.map(f=>[f.x,f.y,f.hp]))'));assert(run('S.spread.fuel.length>0'),'Every mission has spread opportunities');}
+ for(let i=0;i<10;i++){run('reset("normal");draw()');layouts.add(run('JSON.stringify(S.fires.map(f=>[f.x,f.y,f.hp]))'));assert(run('S.spread.fuel.length>0'),'Every mission has spread opportunities');}
  assert(layouts.size>1,'Fresh calls have variable fire layouts');
- run('reset();start()');const original=run('S.fires.length'),budget=run('S.spread.fuel.length');step(650);run('draw()');
+ run('reset("normal");start()');const original=run('S.fires.length'),budget=run('S.spread.fuel.length');step(650);run('draw()');
  assert(run('S.spread.fuel.some(f=>f.used)'),'Untreated fire spreads');
  assert(run('S.fires.length')<=original+budget+(mission==='warehouse'?2:0),'Spread stays bounded');
  run('S.fires.forEach(f=>f.hp=0)');const count=run('S.fires.length');step(200);assert.equal(run('S.fires.length'),count,'Extinguished fire never reignites');
 }
-el('mission').value='forest';run('reset();start();S.spread.timer=0');step(1);assert(run('S.spread.pending!==null'));
+el('mission').value='forest';run('reset("normal");start();S.spread.timer=0');step(1);assert(run('S.spread.pending!==null'));
 const source=run('S.spread.fuel[S.spread.pending].source');run(`S.fires[${source}].hp=S.fires[${source}].max*.3`);const count=run('S.fires.length');step(1);assert(run('S.spread.pending===null'));assert.equal(run('S.fires.length'),count,'Cooling source cancels warned spread');
-run('reset();start();S.paused=true');const timer=run('S.spread.timer');step(100);assert.equal(run('S.spread.timer'),timer);
+run('reset("normal");start();S.paused=true');const timer=run('S.spread.timer');step(100);assert.equal(run('S.spread.timer'),timer);
 // Actual command completion with spread enabled and a full team, no forced extinguishing.
-el('mission').value='forest';el('count').value='4';run('reset();start();dispatch()');step(160);
+el('mission').value='forest';el('count').value='4';run('reset("normal");start();dispatch()');step(160);
 for(let ci=0;ci<run('S.civilians.length');ci++){
  run("select('person',S.people[0].id);equip('rescue')");aim(run(`S.civilians[${ci}].x`),run(`S.civilians[${ci}].y`));step(40);
 }

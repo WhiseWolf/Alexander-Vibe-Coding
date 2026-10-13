@@ -8,7 +8,7 @@ function run(s){return vm.runInContext(s,sandbox);}
 function step(n){run(`for(let n=0;n<${n*10};n++)tick(.1)`);}
 function aim(x,y){handlers.mappointerdown({button:0,clientX:x,clientY:y});}
 
-el('mission').value='tunnel';run('reset();start();dispatch()');step(20);run('draw()');
+el('mission').value='tunnel';run('reset("normal");start();dispatch()');step(20);run('draw()');
 run("select('person',S.people[0].id);equip('foam')");aim(run('S.fires[0].x'),run('S.fires[0].y'));assert(run('S.people[0].target===null'),'Liquid action locked until power off');
 run("equip('cutter')");aim(725,365);assert(run('S.people[0].target===null'),'Door rescue locked until power off');
 run("equip('switch')");aim(440,230);assert(run('S.people[0].target.kind==="panel"'));run('S.paused=true');step(30);assert(run('!S.tunnel.powerOff'));run('S.paused=false');step(20);assert(run('S.tunnel.powerOff'));run('draw()');

@@ -57,3 +57,9 @@ Siebter Notruf mit eigener Nachtkarte, stehendem Zug, Warnleuchten und Funken. F
 Feuerwehr-Rettung befreit eine Person und bringt sie sichtbar zum Sammelplatz. Sie wartet dort auf einen Krankenwagen. Jeder Krankenwagen übernimmt automatisch genau einen freien Patienten, fährt zum Sammelplatz, versorgt ihn acht Sekunden, nimmt ihn auf und fährt zum Krankenhaus (linker Kartenrand). Erst die Übergabe zählt als abgeschlossener Transport. Nach zwölf Sekunden kehrt der Wagen für weitere Patienten zurück. Mehrere Wagen übernehmen unterschiedliche Patienten. Einsatzabschluss verlangt die Übergabe aller Patienten zusätzlich zu den bisherigen Aufgaben. Ein Stellplatz bleibt für einen Krankenwagen reserviert, solange keiner angefordert wurde. Pause/Hintergrund halten auch Versorgung und Transport an. Vereinfachte Spielmechanik ohne medizinische Simulation.
 
 Prüfung: `node ambulance-check.cjs` und aktualisierte Szenario-/Abschlusstests. Echter iPad-/iPhone-Test bleibt offen.
+
+## Version 4.2 – Hausbrand und wechselnde Schwierigkeit
+
+Achter Notruf: Von außen unsichtbarer Hausbrand. Mit Notabschaltung den gelben Stromkasten bedienen, dann mit Menschen retten die markierte Tür öffnen. Erst danach werden Innenbrände und Personen sichtbar. Dunkler Innenraum, gezeichneter Rauch und langsameres Gehen im Haus. Leicht/normal: eine Person; schwer: zwei. Krankenwagen müssen alle Patienten ins Krankenhaus bringen. Nach Erfolg zurück zur Zentrale. Zweites Haus und weitere versteckte Gegenstände bleiben spätere Erweiterungen.
+
+Alle Einsätze erhalten zufällig leicht, normal oder schwer. Leicht: schwächere Feuer, keine zusätzliche Ausbreitung, längere Explosionsfrist. Schwer: stärkere Feuer und frühere Ausbreitungswarnung. Hausbrand-Schwierigkeit wird beim Türöffnen im Funk gemeldet. Spielregeln, keine reale Einsatzanleitung. Prüfung mit `node house-check.cjs` für alle drei Varianten; echter Safari-Touch-Test bleibt offen.

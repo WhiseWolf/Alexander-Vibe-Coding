@@ -8,7 +8,7 @@ function run(s){return vm.runInContext(s,sandbox);}
 function step(n){run(`for(let n=0;n<${n*10};n++)tick(.1)`);}
 function aim(x,y){handlers.mappointerdown({button:0,clientX:x,clientY:y});}
 
-el('mission').value='river';run('reset();S.spread=null;start();draw()');
+el('mission').value='river';run('reset("normal");S.spread=null;start();draw()');
 assert(run('S.river.barrels.length===3&&S.civilians[0].underwater'));
 const initial=run('S.river.barrels[0].x');step(10);assert(run('S.river.barrels[0].x')>initial);
 run('S.paused=true');const stopped=run('S.river.barrels[0].x');step(20);assert.equal(run('S.river.barrels[0].x'),stopped);run('S.paused=false');
