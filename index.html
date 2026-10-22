@@ -40,10 +40,26 @@ body.central #center-return{display:none}
 main>.toolbar #start,main>.toolbar label{display:none}
 @media(max-width:650px){.center-board{grid-template-columns:minmax(0,1fr)}.dispatch-center{padding:12px}.call-card,.station-card{padding:14px}.center-intro{margin-bottom:12px}}
 @media(orientation:landscape) and (max-height:600px){.dispatch-center{padding-top:4px}.center-title{font-size:22px;margin:4px 0}.center-intro{margin:4px 0 12px}.call-card,.station-card{padding:12px}.call-card h3{font-size:18px;margin:8px 0}.station-card ul{margin:0;line-height:1.6}}
-</style></head><body><header><div><h1>Alexanders Feuerwehr</h1><small>Einsatzleitung · Blick von der Drohne</small></div><div class="controls"><button id="center-return">Einsatz beenden</button><button id="sound" aria-pressed="false">Ton: aus</button><label class="volume-control">Lautstärke <input id="volume" aria-label="Lautstärke" type="range" min="0" max="100" value="45"></label><button id="pause" aria-pressed="false">Pause</button></div></header>
+
+/* Intro and session rewards share the existing touch-first layout. */
+.intro-screen{position:fixed;inset:0;z-index:10;overflow:auto;display:grid;place-items:center;padding:max(20px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom));background:radial-gradient(ellipse at 50% 20%,#254a61 0,#101b22 70%)}
+.intro-card{width:min(100%,650px);text-align:center;padding:24px 14px}.intro-eyebrow{color:#83d6ff;letter-spacing:.18em;font-size:12px;font-weight:750}.intro-card h2{font-size:clamp(32px,8vw,60px);line-height:1.05;margin:16px 0}.intro-card p{color:#c5d7df;line-height:1.6}.intro-truck{width:min(300px,75%);height:120px;margin:auto;filter:drop-shadow(0 14px 24px #0006)}.beacon{animation:beacon 1.4s ease-in-out infinite}.intro-actions{display:grid;gap:10px;max-width:350px;margin:24px auto 12px}.intro-actions button{min-height:50px}.lesson-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0}.lesson-grid button{text-align:left;font-size:13px}#tutorial-tasks{white-space:pre-line;font-size:12px;line-height:1.7;color:#c5d7df}#tutorial-hint{border-left:3px solid #e8bc58;padding-left:10px;color:#edf4f5;font-size:13px;line-height:1.5}.intro-skip{background:transparent;border-color:transparent;font-size:13px;color:#b6ccd5}.career-card,.result-card{border:1px solid #42616d;border-radius:14px;padding:14px;background:#172e38;margin-bottom:16px}.career-card label{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.career-card select{flex:1;min-width:180px}.career-card p,.result-card p{color:#c5d7df;line-height:1.5;margin:8px 0}.result-card h3{margin:0;color:#f2c66f}.result-stars{font-size:24px;color:#f2c66f;letter-spacing:.15em}#mission-result{border-color:#e8bc58;color:#e5f4ec;line-height:1.6}#mission-level{color:#e8bc58;font-size:12px}.rules{font-size:12px;color:#b6ccd5;line-height:1.5}.intro-card .center-note{font-size:12px}.intro-card svg{max-width:100%}
+@keyframes beacon{0%,100%{opacity:.45}50%{opacity:1;filter:drop-shadow(0 0 14px #6dd5ff)}}
+@media(prefers-reduced-motion:reduce){.beacon,.incoming .call-lamp{animation:none}}
+@media(orientation:landscape) and (max-height:500px){.intro-card{padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;align-items:center}.intro-art{grid-row:1/4}.intro-card h2{font-size:32px}.intro-card p{font-size:13px;margin:4px}.intro-actions{width:100%;margin:8px auto}.intro-truck{height:100px}}
+</style></head><body><header id="game-header"><div><h1>Alexanders Feuerwehr</h1><small>Einsatzleitung · Blick von der Drohne</small></div><div class="controls"><button id="center-return">Einsatz beenden</button><button id="sound" aria-pressed="false">Ton: aus</button><label class="volume-control">Lautstärke <input id="volume" aria-label="Lautstärke" type="range" min="0" max="100" value="45"></label><button id="pause" aria-pressed="false">Pause</button></div></header>
+<section id="intro-screen" class="intro-screen" aria-labelledby="intro-title">
+<div class="intro-card"><div class="intro-art"><div class="intro-eyebrow">DEINE WACHE. DEINE ENTSCHEIDUNG.</div>
+<h2 id="intro-title">Alexanders<br>Feuerwehr</h2>
+<svg class="intro-truck" viewBox="0 0 300 120" role="img" aria-label="Feuerwehrauto mit Blaulicht"><ellipse cx="150" cy="106" rx="135" ry="8" fill="#08141b"/><rect x="23" y="36" width="172" height="57" rx="8" fill="#cf443d"/><path d="M195 45h42l35 27v21h-77z" fill="#ef6250"/><path d="M207 51h26l22 20h-48z" fill="#a9e1ef"/><rect x="34" y="44" width="144" height="35" rx="3" fill="#c3ceca"/><path d="M42 53h128M42 62h128M42 71h128" stroke="#6e8388" stroke-width="3"/><path d="M25 85h245" stroke="#f6d568" stroke-width="6"/><rect class="beacon" x="203" y="35" width="26" height="9" rx="3" fill="#6dd5ff"/><circle cx="69" cy="95" r="16" fill="#0b1922"/><circle cx="69" cy="95" r="7" fill="#98adb4"/><circle cx="231" cy="95" r="16" fill="#0b1922"/><circle cx="231" cy="95" r="7" fill="#98adb4"/></svg></div>
+<p>Einsatzleiter Alexander, deine Mannschaft wartet! Erkunde, rette und entscheide, welche Hilfe gebraucht wird.</p>
+<div class="intro-actions"><button id="intro-start" class="primary">🚒 Zur Einsatzzentrale</button><button id="intro-sound">📻 Mit Funk und Ton starten</button><button id="intro-tutorial">🎓 Feuerwehrschule · Tutorial</button><button id="intro-skip" class="intro-skip">Intro überspringen</button></div>
+<p class="center-note">Antippen statt Tastatur · Ton freiwillig · Fortschritt gilt nur für diese Spielsitzung.</p></div></section>
 <section id="dispatch-center" class="dispatch-center" aria-label="Einsatzzentrale">
-<div class="center-shell"><h2 class="center-title">🚒 Einsatzzentrale</h2>
+<div class="center-shell"><h2 id="center-title" tabindex="-1" class="center-title">🚒 Einsatzzentrale</h2>
 <p class="center-intro">Hier bist du der Einsatzleiter. Nimm den Notruf an und entscheide vor Ort, welche Hilfe gebraucht wird.</p>
+<section class="career-card" aria-label="Einsatzstufe"><label for="play-mode">Spielweise <select id="play-mode"><option value="career">Aufstieg · Schritt für Schritt</option><option value="practice">Übung · Immer leicht</option><option value="tutorial">Tutorial · Feuerwehrschule</option></select></label><p id="career-status" aria-live="polite"></p><p id="career-next"></p><p class="center-note">Vier Fahrzeuge gleichzeitig, ein Platz bleibt für die Rettung frei. Panther: nur am Flughafen, höchstens einer. Auftanken bleibt immer möglich.</p></section>
+<section id="tutorial-lessons" class="career-card" hidden aria-label="Tutorial wählen"><h3>Feuerwehrschule</h3><p>Wähle eine Übung, dann „Tutorial starten“. Häkchen entstehen durch deine Aktionen. Du kannst jede Übung wiederholen. Übungsfeuer werden bei Bedarf neu entzündet, bis die Löschübungen erledigt sind.</p><div id="lesson-buttons" class="lesson-grid"></div><p id="lesson-description"></p></section><section id="last-result" class="result-card" hidden aria-label="Letzter Einsatz"><h3>Dein letzter Einsatz</h3><p id="result-stars" class="result-stars"></p><p id="result-summary"></p><p id="result-badges"></p><p id="result-advice"></p></section>
 <div class="center-board"><article id="call-card" class="call-card" aria-live="polite">
 <span class="call-lamp" aria-hidden="true"></span><strong id="call-status">Leitung bereit</strong>
 <h3 id="call-title">Wir warten auf einen Notruf …</h3><p id="call-place">Feuerwehr-Zentrale</p>
@@ -53,11 +69,11 @@ main>.toolbar #start,main>.toolbar label{display:none}
 <p class="center-note">Acht mögliche Einsätze: Autobrand, Waldbrand, Flugzeugbrand, Lagerhausbrand, Verkehrsunfall, Flussunfall, Hausbrand und Tunnelrettung.</p>
 </div></section>
 <main>
-<div class="toolbar"><label>Einsatz <select id="mission"><option value="car">Autobrand</option><option value="forest" selected>Waldbrand</option><option value="airport">Flugzeugbrand</option><option value="warehouse">Lagerhausbrand</option><option value="accident">Verkehrsunfall</option><option value="river">Flussunfall</option><option value="house">Hausbrand</option><option value="tunnel">Tunnelrettung</option></select></label><button id="start" class="primary">☎ Notruf annehmen</button><span id="clock">00:00</span></div>
+<div class="toolbar"><label>Einsatz <select id="mission"><option value="car">Autobrand</option><option value="forest" selected>Waldbrand</option><option value="airport">Flugzeugbrand</option><option value="warehouse">Lagerhausbrand</option><option value="accident">Verkehrsunfall</option><option value="river">Flussunfall</option><option value="house">Hausbrand</option><option value="tunnel">Tunnelrettung</option></select></label><button id="start" class="primary">☎ Notruf annehmen</button><span id="clock">00:00</span><span id="mission-level"></span></div>
 <div class="scene"><div class="hud"><span id="status">NOTRUF · AUTOBRAND</span><span id="overview">Noch keine Einheiten</span></div><canvas id="map" width="1000" height="680" aria-label="Einsatzkarte von oben. Feuerwehrmann oder Fahrzeug antippen, dann Ausrüstung und Ziel wählen."></canvas><div class="progress"><div id="fill"></div></div></div>
-<section class="command-panel" aria-label="Fahrzeuge und Ausrüstung"><div class="dock"><h2>Fahrzeuge anfordern</h2><div class="toolbar"><label>Fahrzeug <select id="vehicle"><option value="engine">Löschwagen · 2 Feuerwehrleute</option><option value="scout">Vorhut · 2 Feuerwehrleute</option><option value="panther">Flughafen-Panther</option><option value="ambulance">Krankenwagen · 1 Patientenplatz</option><option value="police">Polizei</option></select></label><label>Anzahl <input id="count" type="number" inputmode="numeric" min="1" max="4" value="1"></label><button id="dispatch">🚨 Anfordern</button></div><p id="fleet-limit" aria-live="polite"></p><div id="units" aria-label="Einheiten auswählen"></div></div>
-<div class="dock"><h2 id="selection">Tippe einen Feuerwehrmann oder ein Fahrzeug an</h2><p id="hint">Nimm den Notruf an. Fordere dann einen Löschwagen an. Du siehst die Anfahrt und das Aussteigen.</p><div class="row" id="equipment"><button data-tool="water">💧 Wasserschlauch</button><button data-tool="foam">🫧 Löschschaum</button><button data-tool="powder">🧯 Löschpulver</button><button data-tool="additive">💦 Wasser + Mittel</button><button data-tool="switch" hidden>⚡ Notabschaltung</button><button data-tool="cutter">✂ Rettungsschere</button><button data-tool="diver">🤿 Tauchausrüstung</button><button data-tool="boom">🛟 Ölsperre</button><button data-tool="rescue">🩺 Menschen retten</button></div><div class="row" style="margin-top:8px"><button id="return">↩ Zurück / auftanken</button><button id="withdraw">🏠 Zur Wache / Platz freigeben</button><button id="air">✈ Löschflugzeug</button></div></div>
-<div id="radio" role="log" aria-live="polite">📻 Ein Notruf wartet auf dich.</div><footer><span>Version 4.3 · Animierte 2D-Einsatzkarte · Spielregeln, keine echte Einsatzanleitung</span><button id="restart">Neu starten</button></footer></section></main><script src="game.js?v=erkunden-43"></script><script>
+<section id="command-panel" class="command-panel" aria-label="Fahrzeuge und Ausrüstung"><div id="mission-result" class="dock" hidden role="status"></div><section id="tutorial-panel" class="dock" hidden aria-label="Tutorial-Hilfe"><h2 id="tutorial-title"></h2><p id="tutorial-hint" aria-live="polite"></p><div id="tutorial-tasks"></div><button id="tutorial-restart">Übung neu starten</button></section><div class="dock"><h2>Fahrzeuge anfordern</h2><div class="toolbar"><label>Fahrzeug <select id="vehicle"><option value="engine">Löschwagen · 2 Feuerwehrleute</option><option value="scout">Vorhut · 2 Feuerwehrleute</option><option value="panther">Flughafen-Panther</option><option value="ambulance">Krankenwagen · 1 Patientenplatz</option><option value="police">Polizei</option></select></label><label>Anzahl <input id="count" type="number" inputmode="numeric" min="1" max="4" value="1"></label><button id="dispatch">🚨 Anfordern</button></div><p id="fleet-limit" aria-live="polite"></p><div id="units" aria-label="Einheiten auswählen"></div></div>
+<div class="dock"><h2 id="selection">Tippe einen Feuerwehrmann oder ein Fahrzeug an</h2><p id="hint">Nimm den Notruf an. Fordere dann einen Löschwagen an. Du siehst die Anfahrt und das Aussteigen.</p><div class="row" id="equipment"><button data-tool="water">💧 Wasserschlauch</button><button data-tool="foam">🫧 Löschschaum</button><button data-tool="powder">🧯 Löschpulver</button><button data-tool="additive">💦 Wasser + Mittel</button><button data-tool="switch" hidden>⚡ Notabschaltung</button><button data-tool="cutter">✂ Rettungsschere</button><button data-tool="diver">🤿 Tauchausrüstung</button><button data-tool="boom">🛟 Ölsperre</button><button data-tool="hydrant">🚰 Hydrant anschließen</button><button data-tool="splitter">⑂ Y-Verteiler setzen</button><button data-tool="rescue">🩺 Menschen retten</button></div><p id="hose-info" aria-live="polite"></p><div class="row"><button id="hose-extend">Schlauch kuppeln · +40 m</button><button id="hose-direct">Direkt am Fahrzeug anschließen</button></div><div class="row" style="margin-top:8px"><button id="return">↩ Zurück / auftanken</button><button id="withdraw">🏠 Zur Wache / Platz freigeben</button><button id="air">✈ Löschflugzeug</button></div></div>
+<p class="rules">Sterne: 1 für alle Aufgaben, +1 für wenige angeforderte Fahrzeuge (3, bei Wald/Flughafen 4), +1 ohne Explosion, neue Ausbreitungsbrände oder ausgelaufenes Öl. Nachbestellte Fahrzeuge zählen mit; Auftanken zählt nicht neu. Zeit wird angezeigt, ohne Zeitdruck-Bonus.</p><div id="radio" role="log" aria-live="polite">📻 Ein Notruf wartet auf dich.</div><footer><span>Version 5.1 · Animierte 2D-Einsatzkarte · Spielregeln, keine echte Einsatzanleitung</span><button id="restart">Neu starten</button></footer></section></main><script src="game.js?v=ausbildung-51"></script><script>
 // Size the actual canvas box, so touch coordinates match the entire map.
 const sceneBox=document.querySelector('.scene'),mapBox=document.getElementById('map');
 function fitMap(){const w=sceneBox.clientWidth,h=Math.max(0,sceneBox.clientHeight-5),scale=Math.min(w/1000,h/680);mapBox.style.width=(1000*scale)+'px';mapBox.style.height=(680*scale)+'px';}
@@ -89,9 +105,34 @@ function receiveCall(){
  document.getElementById('accept-call').textContent='☎ Notruf annehmen · Einsatz öffnen';
  radio(pendingCall.message);
 }
+function renderCareer(){
+ const difficulty=careerDifficulty();
+ document.getElementById('tutorial-lessons').hidden=!career.tutorial;
+ if(career.tutorial){const buttons=document.getElementById('lesson-buttons');buttons.replaceChildren();for(const lesson of LESSONS){const b=document.createElement('button');b.textContent=(career.lessons.includes(lesson.id)?'✓ ':'')+lesson.title;b.onclick=()=>chooseTutorial(lesson.id);buttons.append(b);}}
+ document.getElementById('career-status').textContent=(career.tutorial?'Feuerwehrschule':career.practice?'Übungsmodus':careerRank())+' · Nächster Einsatz: '+difficulty+' · '+career.wins+' Aufstiegs-Einsätze geschafft';
+ document.getElementById('career-next').textContent=career.tutorial?'Neun frei wählbare Übungen. Hinweise reagieren auf deine Aktionen. Tutorial-Einsätze zählen nicht zum Aufstieg.':career.practice?'In Ruhe üben: schwächere Brände, keine zusätzliche Ausbreitung. Kein Aufstiegsdruck.':career.wins<4?'Noch '+(career.wins<2?2-career.wins:4-career.wins)+' erfolgreiche Einsätze bis zur nächsten Stufe. Normal: stärkere Brände und Ausbreitung. Schwer: frühere Warnung, kräftigere Brände.':'Höchste Stufe erreicht! Meistere wechselnde Einsätze und verdiene Abzeichen.';
+ const report=career.lastReport;document.getElementById('last-result').hidden=!report;
+ if(report){
+  document.getElementById('result-stars').textContent='★'.repeat(report.stars)+'☆'.repeat(3-report.stars);
+  const title=emergencyCalls.find(c=>c.mission===report.mission).place;
+  document.getElementById('result-summary').textContent=title+' · '+report.difficulty+(report.tutorial?' · Tutorial':report.practice?' · Übung':'')+' · '+Math.floor(report.seconds/60)+':'+String(Math.floor(report.seconds%60)).padStart(2,'0')+' Minuten · '+report.vehicles+' Fahrzeuge · '+report.flights+' Abwürfe';
+  document.getElementById('result-badges').textContent=report.badges.join(' · ');
+  document.getElementById('result-advice').textContent=report.stars===3?'Starke Einsatzleitung! Alle drei Sterne geholt.':!report.contained?'Tipp: Achte auf gelbe Warnmarkierungen und sichere Gefahren früh.':'Tipp: Prüfe vor jeder Nachforderung, welche Mannschaft noch helfen kann. Rettung geht immer vor!';
+ }
+}
+function openIntro(){
+ clearTimeout(callTimer);pendingCall=null;reset(careerDifficulty());
+ document.body.classList.add('central');document.getElementById('dispatch-center').hidden=true;
+ document.getElementById('intro-screen').hidden=false;document.getElementById('game-header').inert=true;document.getElementById('intro-start').focus?.();
+}
+function enterCenter(withSound=false){
+ document.getElementById('intro-screen').hidden=true;document.getElementById('game-header').inert=false;
+ if(withSound&&!sound)document.getElementById('sound').click();
+ openCenter();
+}
 function openCenter(){
- clearTimeout(callTimer);pendingCall=null;reset();
- document.body.classList.add('central');document.getElementById('dispatch-center').hidden=false;
+ clearTimeout(callTimer);pendingCall=null;reset(careerDifficulty());renderCareer();
+ document.body.classList.add('central');document.getElementById('dispatch-center').hidden=false;document.getElementById('center-title').focus?.();
  document.getElementById('call-card').classList.remove('incoming');
  document.getElementById('call-status').textContent='Leitung bereit';
  document.getElementById('call-title').textContent='Wir warten auf einen Notruf …';
@@ -99,11 +140,25 @@ function openCenter(){
  document.getElementById('call-message').textContent='Ein neuer Anruf geht gleich ein.';
  document.getElementById('accept-call').disabled=true;
  document.getElementById('accept-call').textContent='☎ Warte auf den Anruf';
- window.speechSynthesis?.cancel();callTimer=setTimeout(receiveCall,2200);
+ window.speechSynthesis?.cancel();if(career.tutorial){document.getElementById('call-title').textContent='Welche Übung möchtest du spielen?';document.getElementById('call-message').textContent='Wähle oben eine Lektion aus.';}else callTimer=setTimeout(receiveCall,2200);
+}
+function chooseTutorial(id){
+ const lesson=LESSONS.find(l=>l.id===id);if(!lesson)return;
+ clearTimeout(callTimer);career.tutorial=true;career.practice=true;career.lesson=id;
+ pendingCall=emergencyCalls.find(c=>c.mission===lesson.mission);
+ document.getElementById('play-mode').value='tutorial';
+ document.getElementById('call-status').textContent='TUTORIAL BEREIT';
+ document.getElementById('call-title').textContent=lesson.title;
+ document.getElementById('call-place').textContent=pendingCall.place;
+ document.getElementById('call-message').textContent=lesson.description;
+ document.getElementById('lesson-description').textContent=lesson.description;
+ document.getElementById('accept-call').disabled=false;
+ document.getElementById('accept-call').textContent='🎓 Tutorial starten';
 }
 document.getElementById('accept-call').onclick=()=>{
  if(!pendingCall)return;clearTimeout(callTimer);
- document.getElementById('mission').value=pendingCall.mission;reset();
+ document.getElementById('mission').value=pendingCall.mission;reset(careerDifficulty());
+ document.getElementById('mission-level').textContent=(career.tutorial?'Tutorial':career.practice?'Übung':careerRank())+' · '+S.difficulty+' · '+flightLimit()+' Flugzeug-Abwürfe bei Waldbrand';
  document.body.classList.remove('central');document.getElementById('dispatch-center').hidden=true;
  pendingCall=null;start();requestAnimationFrame(fitMap);
 };
@@ -111,7 +166,12 @@ onMissionComplete=openCenter;
 document.getElementById('center-return').onclick=openCenter;
 document.getElementById('restart').onclick=openCenter;
 document.getElementById('restart').textContent='Nächster Notruf';
-openCenter();
+document.getElementById('intro-start').onclick=()=>enterCenter();
+document.getElementById('intro-skip').onclick=()=>enterCenter();
+document.getElementById('intro-sound').onclick=()=>enterCenter(true);
+document.getElementById('intro-tutorial').onclick=()=>{career.practice=true;career.tutorial=true;document.getElementById('play-mode').value='tutorial';enterCenter();chooseTutorial('basics');};
+document.getElementById('play-mode').onchange=e=>{career.practice=e.target.value!=='career';career.tutorial=e.target.value==='tutorial';openCenter();};
+openIntro();
 </script>
 <script>
 // Small synthesized sound effects: no downloads, tracking, or external audio files.

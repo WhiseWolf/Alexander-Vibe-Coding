@@ -3,10 +3,10 @@
 Kostenloses Browser-Spiel für Touch auf iPad und iPhone, ohne externe Pakete. Version 3 ersetzt den festen Waldbrand-Ablauf durch eine durchgehend sichtbare Einsatzkarte von oben.
 
 ## Spielen
-https://whisewolf.github.io/Alexander-Vibe-Coding/?v=fluss-37
+https://whisewolf.github.io/Alexander-Vibe-Coding/?v=ausbildung-51
 
 1. In der Einsatzzentrale den zufälligen Notruf annehmen. Sechs Szenarien: Auto-, Wald-, Flugzeug-, Lagerhausbrand, Verkehrsunfall und Flussunfall.
-2. Fahrzeugtyp und eine ganze Anzahl von 1 bis 10 wählen, dann anfordern. Insgesamt passen zehn Fahrzeuge auf die Karte.
+2. Fahrzeugtyp und eine ganze Anzahl von 1 bis 4 wählen, dann anfordern. Insgesamt passen vier Fahrzeuge auf die Karte; ein Platz bleibt für einen Krankenwagen frei.
 3. Die Fahrzeuge fahren sichtbar an. Aus Löschwagen und Vorhut steigen jeweils zwei Feuerwehrleute aus.
 4. Feuerwehrmann auf der Karte antippen. Unten Ausrüstung wählen: Schlauch, Schaum, Pulver, Wasser mit Mittel oder Rettung. Der Feuerwehrmann geht zum Gerätefach.
 5. Auf freien Boden tippen: dorthin gehen. Auf Flamme tippen: hingehen und automatisch löschen. Auf hilfsbedürftige Person tippen: mit Rettungsausrüstung hingehen und retten.
@@ -63,3 +63,29 @@ Prüfung: `node ambulance-check.cjs` und aktualisierte Szenario-/Abschlusstests.
 Achter Notruf: Von außen unsichtbarer Hausbrand. Mit Notabschaltung den gelben Stromkasten bedienen, dann mit Menschen retten die markierte Tür öffnen. Erst danach werden Innenbrände und Personen sichtbar. Dunkler Innenraum, gezeichneter Rauch und langsameres Gehen im Haus. Leicht/normal: eine Person; schwer: zwei. Krankenwagen müssen alle Patienten ins Krankenhaus bringen. Nach Erfolg zurück zur Zentrale. Zweites Haus und weitere versteckte Gegenstände bleiben spätere Erweiterungen.
 
 Alle Einsätze erhalten zufällig leicht, normal oder schwer. Leicht: schwächere Feuer, keine zusätzliche Ausbreitung, längere Explosionsfrist. Schwer: stärkere Feuer und frühere Ausbreitungswarnung. Hausbrand-Schwierigkeit wird beim Türöffnen im Funk gemeldet. Spielregeln, keine reale Einsatzanleitung. Prüfung mit `node house-check.cjs` für alle drei Varianten; echter Safari-Touch-Test bleibt offen.
+
+
+## Version 5.0 – Einsatzleiter Alexander
+
+Neuer Startbildschirm mit gezeichnetem Feuerwehrauto, dezentem Blaulicht (respektiert reduzierte Bewegung), direktem Einstieg und freiwilligem Funk/Ton. Erst nach dem Antippen wird ein Notruf ausgelöst. Das Intro lässt sich überspringen.
+
+Im Aufstiegsmodus beginnen Einsätze leicht. Nach zwei erfolgreichen Einsätzen folgen normale Einsätze, nach vier schwere. Stufe und nächster Aufstieg stehen vor Annahme des Notrufs in der Zentrale. Der jederzeit in der Zentrale wählbare Übungsmodus bleibt leicht und erhöht den Aufstiegszähler nicht. Abbrechen erhöht ihn ebenfalls nicht. Die bestehenden vier Stellplätze, der reservierte Krankenwagenplatz und die Panther-Regel bleiben erhalten. Das Löschflugzeug hat bei Waldbrand drei Abwürfe auf leicht, zwei auf normal, einen auf schwer; die 75 Sekunden Wartezeit bleibt. Zielwahl abbrechen verbraucht keinen Abwurf. Weitere Löschwagen und Auftanken bleiben verfügbar, damit verbrauchte Spezialhilfe keinen Einsatz blockiert.
+
+Nach einem Erfolg erscheinen Zeit, insgesamt angeforderte Fahrzeuge, Abwürfe und bis zu drei Sterne. Ein Stern gilt dem vollständigen Abschluss einschließlich Klinikübergaben. Ein weiterer belohnt höchstens drei angeforderte Fahrzeuge (vier bei Wald/Flughafen); abgezogene und neu angeforderte Wagen zählen mit, Auftanken und Rückkehr desselben Krankenwagens nicht. Der dritte Stern belohnt einen Abschluss ohne Explosion, tatsächlich neu entstandene Ausbreitungsbrände oder jemals ausgelaufenes Öl. Konkrete Abzeichen nennen beispielsweise verhinderte Explosionen, gestoppte Ausbreitung und rechtzeitig gesicherte Ölfässer. Klickanzahl und Geschwindigkeit verdienen keine Bonuspunkte. Die Abschlusszeit wird beim Erfolg eingefroren und enthält weder Pausen noch den Rückkehr-Countdown. Die letzte Auswertung bleibt nach der automatischen Rückkehr in der Zentrale lesbar.
+
+Bewusst keine dauerhafte Speicherung, Highscoreliste, Anmeldung oder Synchronisierung. Fortschritt und letzte Auswertung existieren ausschließlich im Arbeitsspeicher dieser geöffneten Seite; Neuladen beginnt eine neue Schicht.
+
+Prüfung: alle `*-check.cjs`, `check-new-missions.cjs`, `test-game.cjs`, `test-new-missions.cjs`, `tests/room-and-fleet.cjs` und `tests/progression.cjs`. Die alten DOM-Testattrappen wurden um die vorhandene Panther-Auswahl ergänzt und die Szenarien an die bereits existierende Vier-Fahrzeug-Regel angepasst. Der Haus-Test erkundet die Räume vor Befehlen an versteckte Personen. `tests/browser-flow.cjs` prüft mit Playwright den Intro-/Zentralen-/Erfolgsablauf in drei Touch-Viewports; Der Test startet seinen HTTP-Server selbst und benötigt installiertes Playwright/Chromium. Ein echter Safari-Test auf iPad/iPhone bleibt nötig.
+
+
+## Version 5.1 – Schläuche und Feuerwehrschule
+
+Alle Einsätze besitzen drei blaue Hydranten an der Zufahrt. Feuerwehrmann wählen, „Hydrant anschließen“ und den Hydranten antippen. Die Mannschaft verlegt vereinfacht eine maximal 80 m lange Zuleitung und verbindet sie nach fünf Sekunden Arbeit. Ein Hydrant versorgt einen Wagen. Er füllt den Tank laufend auf und kann zwei Schlauchtrupps versorgen. Panther nutzen weiterhin ihren Tank und die Rückfahrt zum Auftanken.
+
+Wasser, Schaum und Wasser mit Mittel benötigen einen Schlauch. Pro Feuerwehrmann stehen zunächst 80 Spielmeter bereit; „Schlauch kuppeln · +40 m“ verlängert zweimal bis 160 m. Reichweite wird beim Zielbefehl und beim Löschen geprüft. Ein Kreis zeigt die Reichweite; in Häusern läuft die Längenberechnung durch Türen und Flur. Sichtbare Kupplungen markieren die Leitung. Pulver und Rettungsausrüstung brauchen keine Wasserleitung. Die Maßstabswerte sind erfundene Spielregeln.
+
+„Y-Verteiler setzen“ wählen und freien Boden innerhalb der 80-m-Zuleitung antippen. Nach fünf Sekunden Aufbau können die zwei Feuerwehrleute desselben Fahrzeugs jeweils einen Ausgang nutzen: Schlauch wählen, Y antippen, dann Brand antippen. Der Truppschlauch beginnt nun am Y, damit die Reichweite steigt. „Direkt am Fahrzeug anschließen“ löst diesen Anschluss. Abziehen oder Auftanken trennt Hydrant und Verteiler und gibt die Anschlüsse frei. Zurückkehrende Mannschaften erhalten ihre Grundausstattung. Erfolgreich genutzte Versorgung und Y-Abgänge können Abzeichen geben.
+
+Die Feuerwehrschule ist im Intro oder unter Spielweise erreichbar. Neun frei wählbare Lektionen: Grundbefehle mit allen vier Löschmitteln, Pause, Polizei, Auftanken und Platzfreigabe; Wasserversorgung; Rettungsschere; Flussrettung; Haus-Erkundung; Tunnel; Explosionsverhinderung; Löschflugzeug/Vorhut; Panther. Aufgaben werden anhand echter Bewegungen und Aktionen abgehakt. Im Tutorial bleibt es leicht, die Lagerhaus-Warnung dauert zehn Minuten, der Aufstieg zählt nicht weiter. Übungsfeuer werden für noch fehlende Löschübungen ausdrücklich erneut entzündet. Erst nach den Lektionsaufgaben und den normalen Einsatzaufgaben wird die Übung abgeschlossen. Jede Lektion lässt sich jederzeit neu starten; nach einer Explosion weist die Hilfe ausdrücklich darauf hin. Die Polizei hat weiterhin keine Absperrfunktion, was die Lektion erklärt. Erledigte Lektionen bleiben nur bis zum Neuladen markiert.
+
+Zusätzliche Prüfung: `node tests/hoses.cjs`, `node tests/tutorial.cjs`, `node tests/tutorial-playthrough.cjs`. Der letzte Test spielt alle neun Lektionen über tatsächliche Befehle vollständig durch, ohne Abschlussflags oder Aktionsstatistiken zu setzen. Die älteren Szenariotests kuppeln ihre Löschschläuche jetzt über die normale Aktion. Der Browser-Test prüft außerdem Tutorial-Auswahl, Kupplung, Hydrantenanschluss, beide Y-Abgänge trotz darauf stehender Mannschaft und Neustart in drei Touch-Viewports. Echter iPad-/iPhone-Safari-Test bleibt offen.

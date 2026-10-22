@@ -1,7 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const elements=new Map(),handlers={};
 const ctx=new Proxy({createRadialGradient:()=>({addColorStop(){}}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>o[k]||(()=>{})});
-function el(id){if(!elements.has(id))elements.set(id,{value:id==='mission'?'forest':id==='count'?'4':id==='vehicle'?'engine':'',style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},replaceChildren(){},append(){},addEventListener:(name,fn)=>handlers[id+name]=fn,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1000,height:680})});return elements.get(id);}
+function el(id){if(!elements.has(id))elements.set(id,{value:id==='mission'?'forest':id==='count'?'3':id==='vehicle'?'engine':'',style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},querySelector(){return el("panther-option")},replaceChildren(){},append(){},addEventListener:(name,fn)=>handlers[id+name]=fn,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1000,height:680})});return elements.get(id);}
 const sandbox={document:{getElementById:el,querySelectorAll:()=>[],addEventListener(){},hidden:false,createElement:()=>el(Math.random())},window:{},requestAnimationFrame(){},console};
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync('game.js','utf8'),sandbox);
 function run(s){return vm.runInContext(s,sandbox);}
@@ -15,7 +15,7 @@ sandbox.document.body={classList:{add(){central=true},remove(){central=false}}};
 const html=fs.readFileSync('index.html','utf8');
 const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].find(m=>m[1].includes('const emergencyCalls='))[1];
 vm.runInContext(script,sandbox);
-timer();el('accept-call').onclick();assert(!central&&run('S.active'));
+el('intro-start').onclick();timer();el('accept-call').onclick();assert(!central&&run('S.active'));
 run('S.fires.forEach(f=>f.hp=0);S.civilians.forEach(c=>{c.saved=true;c.care="hospital"});if(S.river)S.river.barrels.forEach(b=>b.secured=true);if(S.tunnel)S.tunnel.powerOff=true');step(1);
 assert(run('S.done')&&!central,'Success stays visible');
 run('S.paused=true');step(20);assert(!central,'Pause holds completion countdown');

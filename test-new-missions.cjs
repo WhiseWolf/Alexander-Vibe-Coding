@@ -1,7 +1,7 @@
 // Headless simulation tests. Run: node test-game.cjs
 const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
 const elements=new Map(),tools=['water','foam','powder','additive','rescue'].map(tool=>({dataset:{tool},classList:{toggle(){}},disabled:false}));
-function el(id){if(!elements.has(id))elements.set(id,{value:({mission:'car',count:'1',vehicle:'engine'})[id]||'',style:{},dataset:{},children:[],classList:{toggle(){}},setAttribute(){},addEventListener(n,fn){this[n]=fn},append(v){this.children.push(v)},replaceChildren(){this.children=[]},getContext(){return new Proxy({},{get:(_,key)=>key.startsWith('create')?()=>({addColorStop(){}}):()=>{}})},getBoundingClientRect(){return{x:0,y:0,left:0,top:0,width:1000,height:680}}});return elements.get(id);}
+function el(id){if(!elements.has(id))elements.set(id,{value:({mission:'car',count:'1',vehicle:'engine'})[id]||'',style:{},dataset:{},children:[],classList:{toggle(){}},setAttribute(){},querySelector(){return el("panther-option")},addEventListener(n,fn){this[n]=fn},append(v){this.children.push(v)},replaceChildren(){this.children=[]},getContext(){return new Proxy({},{get:(_,key)=>key.startsWith('create')?()=>({addColorStop(){}}):()=>{}})},getBoundingClientRect(){return{x:0,y:0,left:0,top:0,width:1000,height:680}}});return elements.get(id);}
 const document={getElementById:el,querySelectorAll:()=>tools,addEventListener(){},createElement:()=>({style:{},classList:{toggle(){}}})};
 const c=vm.createContext({document,window:{},requestAnimationFrame(){},console});vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),c);const run=s=>vm.runInContext(s,c);const advance=n=>run(`for(let i=0;i<${n*10};i++)tick(.1)`);const tap=(x,y)=>el('map').pointerdown({button:0,clientX:x,clientY:y});
 
@@ -14,7 +14,7 @@ for(const mission of ['warehouse','accident']){
  }
  for(let fi=0;fi<run('S.fires.length');fi++){
  for(let attempts=0;attempts<8&&run(`S.fires[${fi}].hp>0`);attempts++){
- run('select("person",S.people.find(p=>p.truckId===S.trucks[0].id).id);equip("water")');const f=run(`({x:S.fires[${fi}].x,y:S.fires[${fi}].y})`);tap(f.x,f.y);advance(190);
+ run('select("person",S.people.find(p=>p.truckId===S.trucks[0].id).id);equip("water");extendHose();extendHose()');const f=run(`({x:S.fires[${fi}].x,y:S.fires[${fi}].y})`);tap(f.x,f.y);advance(190);
  if(!run('S.done')&&run('S.trucks[0].water<20')){run('sendBack(S.trucks[0])');advance(100);}
  }
  assert.ok(run(`S.fires[${fi}].hp===0`));

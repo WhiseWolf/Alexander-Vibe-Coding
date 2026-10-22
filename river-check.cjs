@@ -1,7 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const elements=new Map(),handlers={};
 const ctx=new Proxy({createRadialGradient:()=>({addColorStop(){}}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>o[k]||(()=>{})});
-function el(id){if(!elements.has(id))elements.set(id,{value:id==='mission'?'forest':id==='count'?'4':id==='vehicle'?'engine':'',style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},replaceChildren(){},append(){},addEventListener:(name,fn)=>handlers[id+name]=fn,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1000,height:680})});return elements.get(id);}
+function el(id){if(!elements.has(id))elements.set(id,{value:id==='mission'?'forest':id==='count'?'3':id==='vehicle'?'engine':'',style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},querySelector(){return el("panther-option")},replaceChildren(){},append(){},addEventListener:(name,fn)=>handlers[id+name]=fn,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1000,height:680})});return elements.get(id);}
 const sandbox={document:{getElementById:el,querySelectorAll:()=>[],addEventListener(){},hidden:false,createElement:()=>el(Math.random())},window:{},requestAnimationFrame(){},console};
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync('game.js','utf8'),sandbox);
 function run(s){return vm.runInContext(s,sandbox);}
@@ -15,7 +15,7 @@ run('S.paused=true');const stopped=run('S.river.barrels[0].x');step(20);assert.e
 run('dispatch()');step(20);
 run("select('person',S.people[0].id);equip('rescue')");aim(790,215);assert(run('S.people[0].target===null'),'Ordinary rescue cannot reach underwater person');
 run("equip('diver')");aim(790,215);step(30);assert(run('S.civilians[0].saved'),'Diver rescues through real commands');
-run("select('person',S.people[1].id);equip('foam')");aim(560,390);step(120);assert(run('S.fires[0].hp===0'));assert(run('!S.done'),'Oil containment is required for success');
+run("select('person',S.people[1].id);equip('foam');extendHose();extendHose()");aim(560,390);step(120);assert(run('S.fires[0].hp===0'));assert(run('!S.done'),'Oil containment is required for success');
 step(80);assert(run('S.river.barrels.some(b=>b.leaking)'),'Unsecured barrels leak but can still be recovered');run('draw()');
 for(let i=0;i<3;i++){
  run("select('person',S.people[0].id);equip('rescue')");aim(run(`S.river.barrels[${i}].x`),run(`S.river.barrels[${i}].y`));assert(run('S.people[0].target===null'));

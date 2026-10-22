@@ -1,7 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const elements=new Map(),handlers={};
 const ctx=new Proxy({createRadialGradient:()=>({addColorStop(){}}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>o[k]||(()=>{})});
-function el(id){if(!elements.has(id))elements.set(id,{value:id==='mission'?'forest':id==='count'?'4':id==='vehicle'?'engine':'',style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},replaceChildren(){},append(){},addEventListener:(name,fn)=>handlers[id+name]=fn,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1000,height:680})});return elements.get(id);}
+function el(id){if(!elements.has(id))elements.set(id,{value:id==='mission'?'forest':id==='count'?'3':id==='vehicle'?'engine':'',style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},querySelector(){return el("panther-option")},replaceChildren(){},append(){},addEventListener:(name,fn)=>handlers[id+name]=fn,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1000,height:680})});return elements.get(id);}
 const sandbox={document:{getElementById:el,querySelectorAll:()=>[],addEventListener(){},hidden:false,createElement:()=>el(Math.random())},window:{},requestAnimationFrame(){},console};
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync('game.js','utf8'),sandbox);
 function run(s){return vm.runInContext(s,sandbox);}
@@ -23,16 +23,16 @@ el('mission').value='forest';run('reset("normal");start();S.spread.timer=0');ste
 const source=run('S.spread.fuel[S.spread.pending].source');run(`S.fires[${source}].hp=S.fires[${source}].max*.3`);const count=run('S.fires.length');step(1);assert(run('S.spread.pending===null'));assert.equal(run('S.fires.length'),count,'Cooling source cancels warned spread');
 run('reset("normal");start();S.paused=true');const timer=run('S.spread.timer');step(100);assert.equal(run('S.spread.timer'),timer);
 // Actual command completion with spread enabled and a full team, no forced extinguishing.
-el('mission').value='forest';el('count').value='4';run('reset("normal");start();dispatch()');step(160);
+el('mission').value='forest';el('count').value='3';run('reset("normal");start();dispatch()');step(160);
 for(let ci=0;ci<run('S.civilians.length');ci++){
  run("select('person',S.people[0].id);equip('rescue')");aim(run(`S.civilians[${ci}].x`),run(`S.civilians[${ci}].y`));step(40);
 }
 for(let fi=0;fi<run('S.fires.length');fi++){
  for(let attempt=0;attempt<8&&run(`S.fires[${fi}].hp>0`);attempt++){
-  run("select('person',S.people.find(p=>p.truckId===S.trucks[0].id).id);equip('additive')");aim(run(`S.fires[${fi}].x`),run(`S.fires[${fi}].y`));step(170);
+  run("select('person',S.people.find(p=>p.truckId===S.trucks[0].id).id);equip('additive');extendHose();extendHose()");aim(run(`S.fires[${fi}].x`),run(`S.fires[${fi}].y`));step(170);
   if(!run('S.done')&&run('S.trucks[0].water<20')){run('sendBack(S.trucks[0])');step(100);}
  }
  assert(run(`S.fires[${fi}].hp===0`),'Spread fires remain extinguishable');
 }
-assert(!run('S.done'));el('vehicle').value='ambulance';el('count').value='2';run('dispatch()');step(180);assert(run('S.done'),'Variable forest with real spread remains completable');
+assert(!run('S.done'));el('vehicle').value='ambulance';el('count').value='1';run('dispatch()');step(180);assert(run('S.done'),'Variable forest with real spread remains completable');
 console.log('PASS: variable layouts in seven missions, actual spread, finite fuel, no reignition, cooling prevention, pause and full command completion');
