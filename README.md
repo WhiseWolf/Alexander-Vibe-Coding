@@ -3,7 +3,7 @@
 Kostenloses Browser-Spiel für Touch auf iPad und iPhone, ohne externe Pakete. Version 3 ersetzt den festen Waldbrand-Ablauf durch eine durchgehend sichtbare Einsatzkarte von oben.
 
 ## Spielen
-https://whisewolf.github.io/Alexander-Vibe-Coding/?v=rekorde-52
+https://whisewolf.github.io/Alexander-Vibe-Coding/?v=tunnel-521
 
 1. In der Einsatzzentrale den zufälligen Notruf annehmen. Sechs Szenarien: Auto-, Wald-, Flugzeug-, Lagerhausbrand, Verkehrsunfall und Flussunfall.
 2. Fahrzeugtyp und eine ganze Anzahl von 1 bis 4 wählen, dann anfordern. Insgesamt passen vier Fahrzeuge auf die Karte; ein Platz bleibt für einen Krankenwagen frei.
@@ -99,3 +99,11 @@ In der Zentrale öffnet „Persönliche Rekorde“ die jeweils beste Zeit, gerin
 Nicht lesbare Daten werden geprüft und das Spiel bleibt bedienbar; beim nächsten Erfolg kann ein neuer gültiger Spielstand gespeichert werden. Gesperrter oder voller Speicher wird in der Auswertung und im Rekordbuch angezeigt; der aktuelle Fortschritt bleibt dann nur im Arbeitsspeicher. Vor einem Abschluss werden neuere Bestleistungen aus einem bereits geöffneten anderen Tab eingelesen. Es werden nur Daten dieses Spiels gespeichert, keine anderen Website-Daten gelöscht.
 
 Prüfung: `node tests/storage.cjs` prüft Wiederherstellung in einer neuen Seiteninstanz, alle drei Rekordarten, Trennung der Wertungen, Tutorial-Fortschritt, Abbruch, blockierten Speicher, beschädigte Daten und ältere Tabs. `tests/browser-flow.cjs` prüft zusätzlich tatsächliches Neuladen, einen neuen Tab und die mobile Rekordtabelle. Ein echter Safari-Gerätetest bleibt offen.
+
+## Version 5.2.1 – Antippbare Zugtüren und zuverlässige Befreiung
+
+Die gezeichneten gelben Zugtüren sind jetzt direkte Rettungsziele für ihren jeweiligen Fahrgast. Zuvor reagierte nur die darunter gezeichnete Person, wodurch ein Tipp auf die Tür ins Leere ging. Zeichnung und Zielerkennung verwenden dieselben Türpositionen. Rettungsziele erhalten eine mindestens 44 Bildschirm-Pixel große Antippfläche und Vorrang vor danebenstehenden Feuerwehrleuten, wenn ein Rettungsgerät ausgewählt ist.
+
+Im Tunnel zuerst Notabschaltung am Schaltkasten links, dann Rettungsschere holen und auf eine gelbe Zugtür oder die Person tippen. Die Mannschaft öffnet die klemmende Tür und befreit die Person in einer gemeinsamen zehnsekündigen Aktion vor Ort. Wiederholtes Antippen setzt die Arbeit nicht zurück. Fortschritt und Restzeit erscheinen beim ausgewählten Trupp und an der Zugtür. Beide Personen warten anschließend auf den Krankenwagen; weiterhin zählt erst die Klinikübergabe als abgeschlossene Rettung.
+
+Prüfung: `node tests/tunnel-targets.cjs` reproduziert die Tür-Antippfehler, prüft Notabschaltung, doppelte Befehle, danebenstehende Mannschaft, Pausen, kleine Antippflächen und beide Kliniktransporte. `node tests/tunnel-browser.cjs` prüft den sichtbaren Türbereich über tatsächliche Touch-Befehle in Hochformat, Querformat und Tablet-Größe auf leicht, normal und schwer. Alle bisherigen Szenario-, Tutorial- und Speichertests bleiben Bestandteil der Prüfung. Gespeicherte Rekorde verwenden denselben unveränderten Speicherschlüssel.
