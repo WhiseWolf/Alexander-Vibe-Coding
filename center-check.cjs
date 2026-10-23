@@ -1,8 +1,8 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
-const elements=new Map();function el(id){if(!elements.has(id))elements.set(id,{value:'',disabled:false,textContent:'',classList:{add(){},remove(){}},onclick:null});return elements.get(id);}
+const elements=new Map();function el(id){if(!elements.has(id))elements.set(id,{value:'',disabled:false,textContent:'',classList:{add(){},remove(){}},replaceChildren(){},onclick:null});return elements.get(id);}
 let timer,mission,starts=0,resets=0;const body={classList:{add(){},remove(){}}};
-const career={wins:0,practice:false,lastReport:null};
-const c=vm.createContext({career,careerDifficulty:()=> 'leicht',careerRank:()=> 'Nachwuchs-Einsatzleiter',flightLimit:()=>3,S:{difficulty:'leicht'},document:{body,getElementById:el},window:{},setTimeout(fn){timer=fn;return 1},clearTimeout(){timer=null},requestAnimationFrame(){},reset(){resets++},start(){mission=el('mission').value;starts++},fitMap(){},radio(){},URLSearchParams,Math});
+const career={wins:0,practice:false,records:{},lastReport:null};
+const c=vm.createContext({career,deviceStorageState:'ready',careerDifficulty:()=> 'leicht',careerRank:()=> 'Nachwuchs-Einsatzleiter',flightLimit:()=>3,S:{difficulty:'leicht'},document:{body,getElementById:el},window:{},setTimeout(fn){timer=fn;return 1},clearTimeout(){timer=null},requestAnimationFrame(){},reset(){resets++},start(){mission=el('mission').value;starts++},fitMap(){},radio(){},URLSearchParams,Math});
 const html=fs.readFileSync('index.html','utf8');const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].find(m=>m[1].includes('const emergencyCalls='))[1];vm.runInContext(script,c);
 assert.equal(starts,0);assert.equal(timer,null);assert.equal(el('intro-screen').hidden,false);el('intro-start').onclick();assert.equal(el('accept-call').disabled,true);timer();assert.equal(el('accept-call').disabled,false);
 const seen=new Set();let previous;

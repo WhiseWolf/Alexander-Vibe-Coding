@@ -1,8 +1,10 @@
 'use strict';
 const $=id=>document.getElementById(id),canvas=$('map'),ctx=canvas.getContext('2d');
 const VEHICLE_LIMIT=4;
-// Session-only progression: reloading intentionally starts a fresh watch.
-const career={wins:0,practice:false,tutorial:false,lesson:"basics",lessons:[],lastReport:null};
+// One device/browser profile; active incidents and temporary mode choices are not saved.
+const PROGRESS_KEY='alexanders-feuerwehr-progress-v1';
+let deviceStorageState='ready';
+const career={wins:0,practice:false,tutorial:false,lesson:"basics",lessons:[],records:{},lastReport:null};
 const LESSONS=[
  {id:'basics',mission:'car',title:'1 · Erste Befehle',description:'Bewegen, alle vier Löschmittel, Pause, Polizei, Auftanken, Abziehen und Rettung.'},
  {id:'water',mission:'car',title:'2 · Wasser marsch!',description:'Schlauch verlängern, Hydrant anschließen und zwei Trupps am Y-Verteiler einsetzen.'},
@@ -14,6 +16,44 @@ const LESSONS=[
  {id:'forest',mission:'forest',title:'8 · Hilfe aus der Luft',description:'Vorhut, Löschwagen und gezielten Wasserabwurf ausprobieren.'},
  {id:'airport',mission:'airport',title:'9 · Flughafen-Panther',description:'Panther anfordern, Löschmittel wählen und Dachwerfer einsetzen.'}
 ];
+function loadDeviceProgress(){
+ let raw;
+ try{raw=window.localStorage.getItem(PROGRESS_KEY);}catch{deviceStorageState='blocked';return;}
+ if(raw===null)return;
+ let data;
+ try{data=JSON.parse(raw);}catch{deviceStorageState='invalid';return;}
+ if(!data||data.version!==1){deviceStorageState='invalid';return;}
+ career.wins=Math.max(career.wins,Number.isSafeInteger(data.wins)&&data.wins>=0?data.wins:0);
+ if(Array.isArray(data.lessons))career.lessons=[...new Set(career.lessons.concat(data.lessons.filter(id=>LESSONS.some(l=>l.id===id))))];
+ const missions=['car','forest','airport','warehouse','accident','river','house','tunnel'];
+ for(const [key,record] of Object.entries(data.records||{})){
+  const [mode,mission,difficulty,...extra]=key.split(':');
+  if(extra.length||!['career','practice'].includes(mode)||!missions.includes(mission)||!['leicht','normal','schwer'].includes(difficulty))continue;
+  if(!record||!Number.isFinite(record.bestSeconds)||record.bestSeconds<0||!Number.isSafeInteger(record.bestVehicles)||record.bestVehicles<0||!Number.isInteger(record.bestStars)||record.bestStars<1||record.bestStars>3||!Number.isSafeInteger(record.runs)||record.runs<1)continue;
+  const old=career.records[key];
+  career.records[key]={bestSeconds:old?Math.min(old.bestSeconds,record.bestSeconds):record.bestSeconds,bestVehicles:old?Math.min(old.bestVehicles,record.bestVehicles):record.bestVehicles,bestStars:old?Math.max(old.bestStars,record.bestStars):record.bestStars,runs:Math.max(old?.runs||0,record.runs)};
+ }
+}
+function saveDeviceProgress(){
+ try{
+  window.localStorage.setItem(PROGRESS_KEY,JSON.stringify({version:1,wins:career.wins,lessons:career.lessons,records:career.records}));
+  deviceStorageState='ready';
+ }catch{deviceStorageState='blocked';}
+}
+function updatePersonalRecord(report){
+ report.recordChanges=[];
+ if(report.tutorial)return;
+ const key=(report.practice?'practice':'career')+':'+report.mission+':'+report.difficulty;
+ const old=career.records[key];
+ if(!old)report.recordChanges.push('Erster persönlicher Rekord');
+ else{
+  if(report.seconds<old.bestSeconds)report.recordChanges.push('Neue Bestzeit!');
+  if(report.vehicles<old.bestVehicles)report.recordChanges.push('Neuer Fahrzeugrekord!');
+  if(report.stars>old.bestStars)report.recordChanges.push('Neue Sterne-Bestleistung!');
+ }
+ career.records[key]={bestSeconds:old?Math.min(old.bestSeconds,report.seconds):report.seconds,bestVehicles:old?Math.min(old.bestVehicles,report.vehicles):report.vehicles,bestStars:old?Math.max(old.bestStars,report.stars):report.stars,runs:(old?.runs||0)+1};
+}
+loadDeviceProgress();
 function tutorialChecklist(){
  const task=(id,label,done,hint)=>({id,label,done:!!done,hint});
  const allHospital=S.civilians.every(c=>c.care==='hospital');
@@ -72,11 +112,14 @@ function missionReport(){
  return {mission:S.mission,difficulty:S.difficulty,practice:career.practice,tutorial:S.tutorial,lesson:S.lesson,seconds:S.elapsed,vehicles:S.trucks.length,flights:S.airUsed,stars:1+Number(efficient)+Number(contained),efficient,contained,badges};
 }
 function finishMission(){
+ // Refresh before recording a result so a previously opened tab keeps newer bests.
+ loadDeviceProgress();
  S.report=missionReport();career.lastReport=S.report;
  if(S.tutorial&&!career.lessons.includes(S.lesson))career.lessons.push(S.lesson);
  if(!career.practice&&!S.tutorial)career.wins++;
+ updatePersonalRecord(S.report);saveDeviceProgress();
  $('mission-result').hidden=false;$('command-panel').scrollTop=0;
- $('mission-result').textContent='★'.repeat(S.report.stars)+' · '+Math.floor(S.report.seconds/60)+':'+String(Math.floor(S.report.seconds%60)).padStart(2,'0')+' · '+S.report.vehicles+' Fahrzeuge · '+S.report.flights+' Abwürfe · '+S.report.badges.join(' · ');
+ $('mission-result').textContent='★'.repeat(S.report.stars)+' · '+Math.floor(S.report.seconds/60)+':'+String(Math.floor(S.report.seconds%60)).padStart(2,'0')+' · '+S.report.vehicles+' Fahrzeuge · '+S.report.flights+' Abwürfe · '+S.report.badges.concat(S.report.recordChanges).join(' · ')+(deviceStorageState==='blocked'?' · Lokales Speichern derzeit nicht möglich.':'');
 }
 const HOUSE_ROOMS=[{id:'hall',name:'Eingang',x:515,y:365,w:315,h:50},{id:'left',name:'Linker Raum',x:515,y:170,w:150,h:195},{id:'right',name:'Rechter Raum',x:665,y:170,w:165,h:195}];
 function houseRoom(p){return HOUSE_ROOMS.find(r=>p.x>=r.x&&p.x<r.x+r.w&&p.y>=r.y&&p.y<r.y+r.h);}

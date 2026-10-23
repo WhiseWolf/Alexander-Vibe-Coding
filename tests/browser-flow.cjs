@@ -1,7 +1,7 @@
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
 (async()=>{const server=require('node:http').createServer((req,res)=>{const path=req.url.split('?')[0]==='/game.js'?'game.js':'index.html';res.setHeader('Content-Type',path.endsWith('.js')?'text/javascript':'text/html');res.end(require('node:fs').readFileSync(path));});await new Promise(r=>server.listen(0,'127.0.0.1',r));const baseUrl=process.env.GAME_URL||'http://127.0.0.1:'+server.address().port;const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE,args:['--no-sandbox','--disable-dev-shm-usage','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']}: {})});try{
 for(const viewport of [{width:390,height:844},{width:844,height:390},{width:820,height:1180}]){
- const page=await browser.newPage({viewport,hasTouch:true,isMobile:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const context=await browser.newContext({viewport,hasTouch:true,isMobile:true}),page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto(baseUrl);
  assert(await page.locator('#intro-screen').isVisible(),'Intro opens before the dispatch center');await page.screenshot({path:'/tmp/alexander-intro-'+viewport.width+'.png'});
  assert(await page.evaluate(()=>!S.active&&pendingCall===null));
@@ -30,7 +30,13 @@ for(const viewport of [{width:390,height:844},{width:844,height:390},{width:820,
  await page.locator('#tutorial-restart').tap();assert.equal(await page.evaluate(()=>S.splitters.length),0);assert.equal(await page.evaluate(()=>career.wins),1);
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
  assert.deepEqual(errors,[]);await page.screenshot({path:'/tmp/alexander-'+viewport.width+'.png'});
- await page.reload();assert.equal(await page.evaluate(()=>career.wins),0,'No permanent storage');await page.close();
+ await page.reload();assert.equal(await page.evaluate(()=>career.wins),1,'Progress must survive reload');
+ assert.equal(await page.evaluate(()=>Object.keys(career.records).length),1,'Only the completed career mission has a record');
+ assert.equal(await page.evaluate(()=>Object.values(career.records)[0].bestSeconds),seconds);
+ await page.locator('#intro-start').tap();await page.locator('#record-book summary').tap();
+ assert.equal(await page.locator('#record-rows tr').count(),1);assert((await page.locator('#storage-status').innerText()).includes('diesem Gerät'));
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Record table fits the mobile viewport');
+ const secondTab=await context.newPage();await secondTab.goto(baseUrl);assert.equal(await secondTab.evaluate(()=>career.wins),1,'Progress must survive a new tab');await secondTab.close();await context.close();
  console.log('PASS touch browser flow',viewport.width,viewport.height);
 }
 }finally{await browser.close();server.close()}})().catch(e=>{console.error(e);process.exit(1)});
