@@ -3,7 +3,7 @@
 Kostenloses Browser-Spiel für Touch auf iPad und iPhone, ohne externe Pakete. Version 3 ersetzt den festen Waldbrand-Ablauf durch eine durchgehend sichtbare Einsatzkarte von oben.
 
 ## Spielen
-https://whisewolf.github.io/Alexander-Vibe-Coding/?v=tunnel-521
+https://whisewolf.github.io/Alexander-Vibe-Coding/?v=graphics-530
 
 1. In der Einsatzzentrale den zufälligen Notruf annehmen. Sechs Szenarien: Auto-, Wald-, Flugzeug-, Lagerhausbrand, Verkehrsunfall und Flussunfall.
 2. Fahrzeugtyp und eine ganze Anzahl von 1 bis 4 wählen, dann anfordern. Insgesamt passen vier Fahrzeuge auf die Karte; ein Platz bleibt für einen Krankenwagen frei.
@@ -99,6 +99,15 @@ In der Zentrale öffnet „Persönliche Rekorde“ die jeweils beste Zeit, gerin
 Nicht lesbare Daten werden geprüft und das Spiel bleibt bedienbar; beim nächsten Erfolg kann ein neuer gültiger Spielstand gespeichert werden. Gesperrter oder voller Speicher wird in der Auswertung und im Rekordbuch angezeigt; der aktuelle Fortschritt bleibt dann nur im Arbeitsspeicher. Vor einem Abschluss werden neuere Bestleistungen aus einem bereits geöffneten anderen Tab eingelesen. Es werden nur Daten dieses Spiels gespeichert, keine anderen Website-Daten gelöscht.
 
 Prüfung: `node tests/storage.cjs` prüft Wiederherstellung in einer neuen Seiteninstanz, alle drei Rekordarten, Trennung der Wertungen, Tutorial-Fortschritt, Abbruch, blockierten Speicher, beschädigte Daten und ältere Tabs. `tests/browser-flow.cjs` prüft zusätzlich tatsächliches Neuladen, einen neuen Tab und die mobile Rekordtabelle. Ein echter Safari-Gerätetest bleibt offen.
+
+## Version 5.3.0 – Klarere Grafik und Einheiten mit Abstand
+
+- Eigene Fahrzeugformen für Einsatzleiter, Polizei, Löschwagen, Panther und Krankenwagen, mit Reflexstreifen, Dachdetails, Blaulicht und besser lesbarer Auswahl.
+- Dunkle Einsatzkleidung mit Reflexstreifen, nummerierte Trupps sowie schattierte Straße und markierte Aufstellplätze.
+- Fahrzeuge und Feuerwehrleute umfahren beziehungsweise umgehen andere Einheiten. Trupps wählen bei besetzten Arbeitspositionen einen freien Platz in der Nähe; im Haus bleiben die Innenwände Hindernisse.
+- Auch Aussteigen, gemeinsame Arbeitsziele, Einsteigen und mehrere Krankenwagen sind berücksichtigt. Anfahrten können durch Warten oder Ausweichen etwas länger dauern.
+- Einfache 2D-Abstandsregeln für Einheiten und Hausinnenwände; keine vollständige Physiksimulation aller Gebäude, Bäume oder Schläuche.
+- Regressionstests prüfen Kreuzungen, gemeinsame Ziele, drei Patiententransporte mit zwei RTW und das Ankommen/Abziehen von vier Fahrzeugen samt Mannschaft.
 
 ## Version 5.2.1 – Antippbare Zugtüren und zuverlässige Befreiung
 

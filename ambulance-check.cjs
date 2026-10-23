@@ -15,7 +15,7 @@ el('vehicle').value='ambulance';run('dispatch()');step(10);assert(run('S.trucks[
 step(9);assert(run('S.trucks[1].state==="treating"'));assert(run('S.civilians[0].care==="treating"'),'Patient remains visible during treatment');run('draw();S.paused=true');const timer=run('S.trucks[1].timer');step(20);assert.equal(run('S.trucks[1].timer'),timer);run('S.paused=false');
 step(8);assert(run('S.civilians[0].care==="aboard"&&S.trucks[1].state==="transporting"'));run('draw()');assert(!run('S.done'));step(15);assert(run('S.civilians[0].care==="hospital"&&S.civilians[1].care==="waiting"'));assert(!run('S.done'),'Second person still requires transport');step(100);assert(run('S.civilians.every(c=>c.care==="hospital")&&S.done'),'One ambulance makes multiple trips');
 // Two ambulances reserve different people; duplicate rescue cannot undo care state.
-run('reset();S.spread=null;start();S.civilians.forEach(c=>{c.saved=true;c.care="waiting";c.x=850+S.civilians.indexOf(c)*40;c.y=460})');el('count').value='2';run('dispatch()');step(10);
+run('reset();S.spread=null;start();S.civilians.forEach(c=>{c.saved=true;c.care="waiting";c.x=850+S.civilians.indexOf(c)*40;c.y=460})');el('count').value='2';run('dispatch()');step(15); // Arrival includes spacing behind the preceding ambulance.
 assert(run('S.civilians[0].ambulanceId!==S.civilians[1].ambulanceId&&S.civilians.every(c=>c.ambulanceId!==null)'));
 const care=run('S.civilians[0].care');run('finishRescue({},S.civilians[0],{x:0,y:0})');assert.equal(run('S.civilians[0].care'),care,'Duplicate rescue does not undo ambulance care');
 step(100);assert(run('S.civilians.every(c=>c.care==="hospital")'));run('reset()');assert(run('S.civilians.every(c=>!c.saved&&c.care==="danger"&&!c.ambulanceId)'));

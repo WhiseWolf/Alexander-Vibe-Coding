@@ -1,0 +1,23 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const elements=new Map();function el(id){if(!elements.has(id))elements.set(id,{value:id==='mission'?'car':id==='count'?'1':id==='vehicle'?'engine':'',style:{},classList:{toggle(){}},setAttribute(){},replaceChildren(){},append(){},querySelector(){return el('option');},addEventListener(){},getContext(){return {};}});return elements.get(id);}
+const sandbox={document:{getElementById:el,querySelectorAll:()=>[],addEventListener(){},hidden:false,createElement:()=>el('temp')},window:{},requestAnimationFrame(){},console,Math};vm.createContext(sandbox);vm.runInContext(fs.readFileSync(require('node:path').join(__dirname,'../game.js'),'utf8'),sandbox);const run=s=>vm.runInContext(s,sandbox);
+run(`reset('leicht');start();S.fires.forEach(f=>f.hp=9999);S.trucks=[];S.people=[{id:1,truckId:10,x:200,y:300,state:'moving'},{id:2,truckId:10,x:300,y:300,state:'moving'}];`);
+run(`for(let i=0;i<400;i++){move(S.people[0],{x:450,y:300},.05,70);move(S.people[1],{x:450,y:300},.05,70);if(dist(S.people[0],S.people[1])<25.9)throw Error('Crew overlap at shared destination');}`);
+assert.ok(run('S.people.every(p=>dist(p,{x:450,y:300})<50)'));
+run(`S.people=[];S.trucks=[{id:1,x:230,y:535,state:'ready'},{id:2,x:-80,y:570,state:'incoming'}];for(let i=0;i<1000;i++){move(S.trucks[1],{x:510,y:535},.05,80);const a=S.trucks[0],b=S.trucks[1];if(Math.abs(a.x-b.x)<103&&Math.abs(a.y-b.y)<55)throw Error('Truck passed through parked truck');}`);
+assert.ok(run('dist(S.trucks[1],{x:510,y:535})<1'));
+run(`S.trucks=[];S.people=[{id:1,truckId:10,x:200,y:300,state:'moving'},{id:2,truckId:10,x:400,y:300,state:'moving'}];for(let i=0;i<600;i++){move(S.people[0],{x:400,y:300},.05,70);move(S.people[1],{x:200,y:300},.05,70);if(dist(S.people[0],S.people[1])<25.9)throw Error('Crossing crew overlap');}`);
+assert.ok(run('dist(S.people[0],{x:400,y:300})<50&&dist(S.people[1],{x:200,y:300})<50'));
+run(`$('mission').value='house';reset('normal');start();S.house.doorOpen=true;S.trucks=[];S.people=[{id:1,truckId:10,x:640,y:300,state:'moving'},{id:2,truckId:10,x:610,y:380,state:'idle'}];for(let i=0;i<1000;i++){move(S.people[0],{x:780,y:225},.05,70);const p=S.people[0];if(p.x>650&&p.x<680&&p.y<365)throw Error('Avoidance crossed room wall');} `);
+assert.ok(run('dist(S.people[0],{x:780,y:225})<1'));
+run(`$('mission').value='airport';reset('normal');start();$('vehicle').value='ambulance';$('count').value='2';dispatch();S.civilians.forEach((c,i)=>{c.saved=true;c.care='waiting';c.x=850+i*40;c.y=460;});for(let i=0;i<4000;i++){tick(.1);const [a,b]=S.trucks;if(!['hospital','refilling','finished'].includes(a.state)&&!['hospital','refilling','finished'].includes(b.state)&&Math.abs(a.x-b.x)<103&&Math.abs(a.y-b.y)<55)throw Error('Ambulances overlap');}`);
+assert.ok(run('S.civilians.every(c=>c.care==="hospital")'),'Both ambulances must finish all three transports');
+run(`$('mission').value='car';reset('leicht');start();$('vehicle').value='engine';$('count').value='3';dispatch();$('vehicle').value='ambulance';$('count').value='1';dispatch();
+globalThis.checkSpacing=()=>{const trucks=S.trucks.filter(t=>!['finished','hospital','refilling'].includes(t.state)),people=S.people.filter(p=>p.state!=='aboard');for(let i=0;i<people.length;i++){for(const q of people.slice(i+1))if(dist(people[i],q)<25.9)throw Error('Crew spacing lost');for(const t of trucks)if(Math.abs(t.x-people[i].x)<61.9&&Math.abs(t.y-people[i].y)<39.9)throw Error('Crew crossed vehicle');}for(let i=0;i<trucks.length;i++)for(const t of trucks.slice(i+1))if(Math.abs(t.x-trucks[i].x)<104.9&&Math.abs(t.y-trucks[i].y)<56.9)throw Error('Fleet overlap');};
+for(let i=0;i<400;i++){tick(.05);checkSpacing();}`);
+assert.ok(run('S.trucks.every(t=>t.state==="ready")'),'All four vehicles arrive');
+run(`for(const p of S.people){p.state='moving';p.goal={x:500,y:350};}for(let i=0;i<700;i++){tick(.05);checkSpacing();}`);
+assert.ok(run('S.people.every(p=>p.state==="idle"&&dist(p,{x:500,y:350})<100)'),'Six crew can share a work area');
+run(`S.trucks.forEach(t=>sendBack(t,false,true));for(let i=0;i<2000;i++){tick(.05);checkSpacing();}`);
+assert.ok(run('S.trucks.every(t=>t.state==="finished")'),'All crew board and fleet leaves');
+console.log('PASS shared goals, crossing crew, parked vehicles and indoor avoidance');
