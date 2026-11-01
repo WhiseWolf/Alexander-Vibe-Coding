@@ -59,7 +59,7 @@ loadDeviceProgress();
 function tutorialChecklist(){
  const task=(id,label,done,hint)=>({id,label,done:!!done,hint});
  const allHospital=S.civilians.every(c=>c.care==='hospital');
- const steps=[task('dispatch','Feuerwehr anfordern',S.trucks.some(t=>['engine','scout','panther'].includes(t.type)),'Fordere zuerst einen Löschwagen an. Bei der Flughafen-Übung kannst du den Panther wählen.')];
+ const steps=[task('dispatch','Feuerwehr anfordern',S.trucks.some(t=>['engine','scout','panther','helicopter'].includes(t.type)),'Fordere zuerst einen Löschwagen an. Bei der Flughafen-Übung kannst du den Panther wählen.')];
  if(S.lesson==='basics')steps.push(
   task('move','Einen Feuerwehrmann bewegen',S.stats.moved,'Tippe einen Feuerwehrmann an, dann auf freien Boden. Die Mannschaft steigt nach der Ankunft aus.'),
   task('tools','Alle vier Löschmittel am Übungsfeuer testen',['water','foam','powder','additive'].every(t=>S.stats.toolsUsed.includes(t)),'Teste Wasser, Schaum, Pulver und Wasser + Mittel. Jeweils Feuerwehrmann, Ausrüstung, Brand antippen. Ist der Schlauch zu kurz: +40 m kuppeln. Das Übungsfeuer wird bei Bedarf neu entzündet.'),
